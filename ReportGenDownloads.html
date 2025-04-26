@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Files Download</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        blue: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .file-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        .download-btn {
+            transition: all 0.2s ease;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+        .progress-bar {
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+
+        <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #f1c40f;
+        }
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .nav-links {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">Wy'sPortfolio</div>
+        <div class="nav-links">
+            <a href="index.html#projects">Projects</a>
+            <a href="index.html#tutorials">Tutorials</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-blue-800 mb-3">Excel Resources</h1>
+            <p class="text-lg text-blue-700 max-w-2xl mx-auto">
+                Download the Excel files and make sure you PASTE THEM IN THE SAME FOLDER!
+            </p>
+            <div class="mt-6">
+                <div class="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <span>All files are in .xlsm format (Excel Macro-Enabled Workbook). That means you must use them on a PC not a phone unless you have the technical knowledge of how to.</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Files Grid -->
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Book1.xlsm Card -->
+            <div class="file-card bg-white rounded-xl overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-4 rounded-lg mr-4">
+                            <i class="fas fa-file-excel text-blue-600 text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-900">The Working Area</h3>
+                            <p class="text-blue-700 text-sm mt-1">Book1.xlsm</p>
+
+                        </div>
+                    </div>
+                    <p class="text-blue-700 mt-4">
+                        Comprehensive workbook with advanced macros, formulas, and automation tools.
+                    </p>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-blue-700">File size: 9.06MB</span>
+                            <span class="text-sm text-blue-700">Version: 3</span>
+                        </div>
+                        <div class="bg-blue-200 rounded-full h-2">
+                            <div class="progress-bar bg-blue-600 h-2 rounded-full" id="book1-progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
+                    <button 
+                        id="book1-btn"
+                        class="download-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+                        onclick="downloadFile('Book1.xlsm', 'book1-progress', 'book1-btn')"
+                    >
+                        <i class="fas fa-download mr-2"></i>
+                        Download Workbook
+                    </button>
+                </div>
+            </div>
+
+            <!-- Template.xlsm Card -->
+            <div class="file-card bg-white rounded-xl overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-4 rounded-lg mr-4">
+                            <i class="fas fa-file-alt text-blue-500 text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-900">The Template</h3>
+                            <p class="text-blue-700 text-sm mt-1">Template.xlsm</p>
+
+                        </div>
+                    </div>
+                    <p class="text-blue-700 mt-4">
+                        Clean template with pre-built macros and formatting for an automated setup.
+                    </p>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-blue-700">File size: 50.01KB</span>
+                            <span class="text-sm text-blue-700">Version: 1</span>
+                        </div>
+                        <div class="bg-blue-200 rounded-full h-2">
+                            <div class="progress-bar bg-blue-500 h-2 rounded-full" id="template-progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
+                    <button 
+                        id="template-btn"
+                        class="download-btn w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+                        onclick="downloadFile('Template.xlsm', 'template-progress', 'template-btn')"
+                    >
+                        <i class="fas fa-download mr-2"></i>
+                        Download Template
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="mt-16 bg-white rounded-xl p-8 max-w-4xl mx-auto shadow-sm">
+            <h2 class="text-2xl font-bold text-blue-900 mb-4">About These Files</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
+                        <i class="fas fa-shield-alt text-blue-600 mr-2"></i>
+                        Security Information
+                    </h3>
+                    <p class="text-blue-700">
+                        These files contain macros to enhance functionality. When opening, enable macros for full features.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-blue-800 mb-2 flex items-center">
+                        <i class="fas fa-question-circle text-blue-500 mr-2"></i>
+                        Need Help?
+                    </h3>
+                    <p class="text-blue-700">
+                        Contact support if you encounter any issues with these files.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+function downloadFile(filename, progressId, btnId) {
+    const progressBar = document.getElementById(progressId);
+    const downloadBtn = document.getElementById(btnId);
+    
+    let progress = 0;
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner animate-spin mr-2"></i> Downloading...';
+    
+    const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress > 100) progress = 100;
+        progressBar.style.width = progress + '%';
+        
+        if (progress === 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                // Create a temporary link to trigger download
+                const link = document.createElement('a');
+                link.href = filename; // <-- Actual file path
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Reset button and progress
+                setTimeout(() => {
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Download Complete';
+                    setTimeout(() => {
+                        downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> ' + 
+                            (filename.includes('Book1') ? 'Download Workbook' : 'Download Template');
+                        progressBar.style.width = '0%';
+                    }, 2000);
+                }, 500);
+            }, 500);
+        }
+    }, 100);
+}
+</script>
+
+</body>
+</html>

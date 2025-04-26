@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wycliffe's Portfolio</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #3498db;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #1a252f;
+        }
+        
+        /* Projects Section */
+        .projects {
+            padding: 80px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 36px;
+        }
+        
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .project-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .project-img {
+            height: 200px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .project-content {
+            padding: 20px;
+        }
+        
+        .project-content h3 {
+            margin-top: 0;
+        }
+        
+        .project-content p {
+            color: #666;
+        }
+        
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            background-color: #eee;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        /* Tutorials Section */
+        .tutorials {
+            padding: 80px 0;
+            background-color: #ecf0f1;
+        }
+        
+        .tutorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .tutorial-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tutorial-img {
+            height: 180px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .play-icon {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: rgba(52, 152, 219, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .play-icon:after {
+            content: "";
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-left: 18px solid white;
+            border-bottom: 10px solid transparent;
+            margin-left: 4px;
+        }
+        
+        .tutorial-content {
+            padding: 20px;
+        }
+        
+        /* About Section */
+        .about {
+            padding: 80px 0;
+        }
+        
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .about-img {
+            flex: 1;
+            height: 300px;
+            background-color: #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .about-text {
+            flex: 2;
+        }
+        
+        /* Contact Section */
+        .contact {
+            padding: 80px 0;
+            background-color: #34495e;
+            color: white;
+        }
+        
+        .contact-content {
+            display: flex;
+            gap: 40px;
+        }
+        
+        .contact-info {
+            flex: 1;
+        }
+        
+        .contact-form {
+            flex: 2;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+        }
+        
+        textarea.form-control {
+            height: 150px;
+            resize: vertical;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            margin: 0 10px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .contact-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Wy'sPortfolio</div>
+            <nav>
+                <ul>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#tutorials">Tutorials</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Innovator, Learner & Educator</h1>
+             <p>I build innovative technologies, share what I learn, and create educational content to help others grow their development skills alongside me.</p>
+
+            <a href="#projects" class="btn">View My Work</a>
+        </div>
+    </section>
+
+<!-- Projects Section -->
+<section class="projects" id="projects">
+    <div class="container">
+        <h2 class="section-title">My Projects</h2>
+        <div class="project-grid">
+            <!-- Project 1 -->
+            <a href="ReportGenDownloads.html" style="text-decoration: none; color: inherit;">
+                <div class="project-card">
+                    <div class="project-img">
+                        <img src="ReportGenICO.png" alt="Project 1">
+                    </div>
+                    <div class="project-content">
+                        <h3>Report Generator Tool</h3>
+                        <p>A tool that helps teachers to generate students' report cards after exams</p>
+                        <div class="project-tags">
+                            <span class="tag">Excel</span>
+                            <span class="tag">VBA</span>
+                            <span class="tag">Automation</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Project 2 -->
+            <div class="project-card">
+                <div class="project-img">
+                    <img src="Logo v2.2.png" alt="Project 2">
+                </div>
+                <div class="project-content">
+                    <h3>Coming Soon</h3>
+                    <p>A logo for Star Private Secondary School</p>
+                    <div class="project-tags">
+                        <span class="tag"></span>
+                        <span class="tag"></span>
+                        <span class="tag"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project 3 -->
+            <div class="project-card">
+                <div class="project-img">
+                    <img src="/api/placeholder/400/250" alt="Project 3">
+                </div>
+                <div class="project-content">
+                    <h3>Coming Soon</h3>
+                    <p>A website for a school.</p>
+                    <div class="project-tags">
+                        <span class="tag"></span>
+                        <span class="tag"></span>
+                        <span class="tag"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <!-- Tutorials Section -->
+    <section class="tutorials" id="tutorials">
+        <div class="container">
+            <h2 class="section-title">Video Tutorials</h2>
+            <div class="tutorial-grid">
+                <!-- Tutorial 1 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 1">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (How To Use This Website)</h3>
+                        <p>Learn how to use this website step by step.</p>
+                    </div>
+                </div>
+                
+                <!-- Tutorial 2 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 2">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (How To Use My Report Generator Tool)</h3>
+                        <p>Register students and generate their report cards.</p>
+                    </div>
+                </div>
+                
+                <!-- Tutorial 3 -->
+                <div class="tutorial-card">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 3">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (I Made Phishing Websites)</h3>
+                        <p>See how easy it can be to hack into your accounts if you are careless.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-img">
+                    <img src="profile.png" alt="Profile Photo">
+                </div>
+                <div class="about-text">
+                    <h3>Hi, I'm Wycliffe Mwanganda</h3>
+                    <p>I'm an innovator, builder, and lifelong learner. I love creating useful tools, gadgets, and applications — sometimes things people didn't even realize they needed! I've already built projects like a student report generator tool in Excel, and even crafted simple engineering projects like gloves with built-in flashlights.</p>
+                    <p>This website is my space to document what I've made, what I'm learning, and what I'm dreaming up next. I plan to explore everything from cybersecurity, programming, video editting, animation, electronics, — to building real-world devices based on my ideas.</p>
+                    <p>I'll be sharing tutorials, lessons learned, and behind-the-scenes looks at how I tackle each project. It's all part of my journey to grow my skills — and hopefully inspire others to start their own.</p>
+                    <p>When I'm not building, learning or experimenting, I spend time with my family, but while doing all that it's all spent with God.</p>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p>Feel free to reach out if you have a project in mind, need consulting services, or have questions.</p>
+                    <p>Email: wycliffemwanganda@gmail.com</p>
+                    <p>Location: Mzuzu, Malawi</p>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2025 Wy'sPortfolio. All Rights Reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <img src="/api/placeholder/40/40" alt="GitHub">
+                </a>
+                <a href="#" class="social-link">
+                    <img src="/api/placeholder/40/40" alt="LinkedIn">
+                </a>
+                <a href="#" class="social-link">
+                    <img src="/api/placeholder/40/40" alt="YouTube">
+                </a>
+                <a href="#" class="social-link">
+                    <img src="/api/placeholder/40/40" alt="Twitter">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
