@@ -2,7 +2,7 @@
   "name": "Wycliffe's Portfolio",
   "short_name": "WyPortfolio",
   "description": "Explore DYI projects with Wycliffe.",
-  "start_url": "/",
+  "start_url": "https://wyportfolio-production.up.railway.app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
