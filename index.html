@@ -568,38 +568,36 @@
     chatBox.style.display = chatBox.style.display === 'none' ? 'block' : 'none';
   });
 
-  async function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const log = document.getElementById('chat-log');
-    const userText = input.value.trim();
-    if (!userText) return;
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const log = document.getElementById('chat-log');
+  const userText = input.value.trim();
+  if (!userText) return;
 
-    // Display user's message
-    log.innerHTML += `<div><strong>You:</strong> ${userText}</div>`;
-    input.value = "";
-    log.innerHTML += `<div id="thinking"><strong>AI:</strong> Thinking...</div>`;
+  log.innerHTML += `<div><strong>You:</strong> ${userText}</div>`;
+  input.value = "";
+
+  try {
+    // Make the request to the backend
+    const response = await fetch("https://chat-backend-production-9ca1.up.railway.app/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userText }),
+    });
+
+    const data = await response.json();
+    const aiReply = data.reply || "Sorry, I didn’t understand.";
+    
+    // Log the AI reply
+    log.innerHTML += `<div><strong>AI:</strong> ${aiReply}</div>`;
     log.scrollTop = log.scrollHeight;
-
-    try {
-      const response = await fetch("https://chat-backend-production-9ca1.up.railway.app/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: userText })
-      });
-
-      const data = await response.json();
-      document.getElementById("thinking").remove();
-      log.innerHTML += `<div><strong>AI:</strong> ${data.response}</div>`;
-      log.scrollTop = log.scrollHeight;
-    } catch (error) {
-      document.getElementById("thinking").remove();
-      log.innerHTML += `<div><strong>AI:</strong> Error talking to the server. Try again later.</div>`;
-      log.scrollTop = log.scrollHeight;
-      console.error("Chat error:", error);
-    }
+  } catch (error) {
+    console.error('Chat error:', error);
+    log.innerHTML += `<div><strong>AI:</strong> Sorry, I couldn't respond.</div>`;
+    log.scrollTop = log.scrollHeight;
   }
+}
+
 </script>
 
 
