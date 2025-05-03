@@ -789,43 +789,50 @@
             displayResults(results, searchTerm);
         }
         
-        // Display search results
-        function displayResults(results, searchTerm) {
-            searchResults.innerHTML = '';
+// Display search results
+function displayResults(results, searchTerm) {
+    searchResults.innerHTML = '';
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
+    } else {
+        results.forEach(result => {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'search-result-item';
+            resultElement.innerHTML = `
+                <h4><span class="result-type">${result.type}</span>${result.title}</h4>
+                <p>${result.description}</p>
+            `;
             
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
-            } else {
-                results.forEach(result => {
-                    const resultElement = document.createElement('div');
-                    resultElement.className = 'search-result-item';
-                    resultElement.innerHTML = `
-                        <h4><span class="result-type">${result.type}</span>${result.title}</h4>
-                        <p>${result.description}</p>
-                    `;
-                    
-                    resultElement.addEventListener('click', () => {
-                        // Scroll to the section
-                        const sectionId = result.type === 'Project' ? 'projects' : 'tutorials';
-                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
-                        
-                        // Highlight the card temporarily
-                        result.element.style.boxShadow = '0 0 0 3px rgba(52, 152, 219, 0.5)';
-                        setTimeout(() => {
-                            result.element.style.boxShadow = '';
-                        }, 2000);
-                        
-                        // Close search results
-                        searchResults.style.display = 'none';
-                        searchInput.value = '';
-                    });
-                    
-                    searchResults.appendChild(resultElement);
-                });
-            }
+            resultElement.addEventListener('click', () => {
+                // First ensure all cards are visible
+                allCards.forEach(card => card.style.display = '');
+                
+                // Scroll to the specific card
+                result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Apply more noticeable highlight animation
+                result.element.style.boxShadow = '0 0 0 4px rgba(52, 152, 219, 0.7)';
+                result.element.style.transform = 'scale(1.03)';
+                result.element.style.transition = 'all 0.3s ease';
+                
+                // Reset the highlight after animation
+                setTimeout(() => {
+                    result.element.style.boxShadow = '';
+                    result.element.style.transform = '';
+                }, 2500);
+                
+                // Close search results
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+            });
             
-            searchResults.style.display = 'block';
-        }
+            searchResults.appendChild(resultElement);
+        });
+    }
+    
+    searchResults.style.display = 'block';
+}
         
         // Event listeners
         searchInput.addEventListener('input', () => {
