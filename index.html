@@ -145,17 +145,12 @@
         /* Projects Section */
         .projects {
             padding: 80px 0;
-            position: relative;
         }
         
         .section-title {
             text-align: center;
             margin-bottom: 50px;
             font-size: 36px;
-        }
-        
-        .scroll-container {
-            position: relative;
         }
         
         .project-scroll-container {
@@ -165,7 +160,6 @@
             gap: 30px;
             padding-bottom: 20px;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
         
         .project-card {
@@ -222,7 +216,6 @@
         .tutorials {
             padding: 80px 0;
             background-color: #ecf0f1;
-            position: relative;
         }
         
         .tutorial-scroll-container {
@@ -232,7 +225,6 @@
             gap: 30px;
             padding-bottom: 20px;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
         
         .tutorial-card {
@@ -424,49 +416,6 @@
             color: #666;
         }
         
-        /* Scroll Navigation Arrows */
-        .scroll-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        .scroll-arrow.left {
-            left: 10px;
-        }
-        
-        .scroll-arrow.right {
-            right: 10px;
-        }
-        
-        .scroll-arrow i {
-            color: #2c3e50;
-            font-size: 18px;
-        }
-        
-        .scroll-arrow:hover {
-            background-color: white;
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        .scroll-container:hover .scroll-arrow {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
         /* Responsive Adjustments */
         @media (max-width: 1024px) {
             .search-input {
@@ -512,10 +461,6 @@
             
             .contact-content {
                 flex-direction: column;
-            }
-            
-            .scroll-arrow {
-                display: none;
             }
         }
         
@@ -576,93 +521,70 @@
     <section class="projects" id="projects">
         <div class="container">
             <h2 class="section-title">My Projects</h2>
-            <div class="scroll-container">
-                <div class="project-scroll-container" id="projectsContainer">
-                    <!-- Project 1 -->
-                    <a href="ReportGenDownloads.html" style="text-decoration: none; color: inherit;">
-                        <div class="project-card" data-search="Report Generator Tool Excel VBA Automation">
-                            <div class="project-img">
-                                <img src="ReportGenICO.png" alt="Project 1">
-                            </div>
-                            <div class="project-content">
-                                <h3>Report Generator Tool</h3>
-                                <p>A tool that helps teachers to generate students' report cards after exams</p>
-                                <div class="project-tags">
-                                    <span class="tag">Excel</span>
-                                    <span class="tag">VBA</span>
-                                    <span class="tag">Automation</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                    
-                    <!-- Project 2 -->
-                    <div class="project-card" data-search="Logo Design Star Private Secondary School">
+            <div class="project-scroll-container" id="projectsContainer">
+                <!-- Project 1 -->
+                <a href="ReportGenDownloads.html" style="text-decoration: none; color: inherit;">
+                    <div class="project-card" data-search="Report Generator Tool Excel VBA Automation">
                         <div class="project-img">
-                            <img src="Logo v2.2.png" alt="Project 2">
+                            <img src="ReportGenICO.png" alt="Project 1">
                         </div>
                         <div class="project-content">
-                            <h3>Coming Soon</h3>
-                            <p>A logo for Star Private Secondary School</p>
+                            <h3>Report Generator Tool</h3>
+                            <p>A tool that helps teachers to generate students' report cards after exams</p>
                             <div class="project-tags">
-                                <span class="tag">Design</span>
-                                <span class="tag">Logo</span>
-                                <span class="tag">Branding</span>
+                                <span class="tag">Excel</span>
+                                <span class="tag">VBA</span>
+                                <span class="tag">Automation</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Project 3 -->
-                    <div class="project-card" data-search="Website School Web Design">
-                        <div class="project-img">
-                            <img src="/api/placeholder/400/250" alt="Project 3">
-                        </div>
-                        <div class="project-content">
-                            <h3>Coming Soon</h3>
-                            <p>A website for a school.</p>
-                            <div class="project-tags">
-                                <span class="tag">Web</span>
-                                <span class="tag">Design</span>
-                                <span class="tag">Development</span>
-                            </div>
-                        </div>
+                </a>
+
+                <!-- Project 2 -->
+                <div class="project-card" data-search="Logo Design Star Private Secondary School">
+                    <div class="project-img">
+                        <img src="Logo v2.2.png" alt="Project 2">
                     </div>
-                    
-                    <!-- Additional project for scrolling -->
-                    <div class="project-card" data-search="Future Project Web Design">
-                        <div class="project-img">
-                            <img src="/api/placeholder/400/250" alt="Project 4">
-                        </div>
-                        <div class="project-content">
-                            <h3>Future Project</h3>
-                            <p>Another exciting project coming soon.</p>
-                            <div class="project-tags">
-                                <span class="tag">Web</span>
-                                <span class="tag">Design</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional project for scrolling -->
-                    <div class="project-card" data-search="Future Project Web Design">
-                        <div class="project-img">
-                            <img src="/api/placeholder/400/250" alt="Project 5">
-                        </div>
-                        <div class="project-content">
-                            <h3>Future Project</h3>
-                            <p>Another exciting project coming soon.</p>
-                            <div class="project-tags">
-                                <span class="tag">Web</span>
-                                <span class="tag">Design</span>
-                            </div>
+                    <div class="project-content">
+                        <h3>Coming Soon</h3>
+                        <p>A logo for Star Private Secondary School</p>
+                        <div class="project-tags">
+                            <span class="tag">Design</span>
+                            <span class="tag">Logo</span>
+                            <span class="tag">Branding</span>
                         </div>
                     </div>
                 </div>
-                <div class="scroll-arrow left" onclick="scrollProjects(-1)">
-                    <i class="fas fa-chevron-left"></i>
+
+                <!-- Project 3 -->
+                <div class="project-card" data-search="Website School Web Design">
+                    <div class="project-img">
+                        <img src="/api/placeholder/400/250" alt="Project 3">
+                    </div>
+                    <div class="project-content">
+                        <h3>Coming Soon</h3>
+                        <p>A website for a school.</p>
+                        <div class="project-tags">
+                            <span class="tag">Web</span>
+                            <span class="tag">Design</span>
+                            <span class="tag">Development</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="scroll-arrow right" onclick="scrollProjects(1)">
-                    <i class="fas fa-chevron-right"></i>
+
+                <!-- Additional project for scrolling -->
+                <div class="project-card" data-search="Future Project Web Design">
+                    <div class="project-img">
+                        <img src="/api/placeholder/400/250" alt="Project 4">
+                    </div>
+                    <div class="project-content">
+                        <h3>Future Project</h3>
+                        <p>Another exciting project coming soon.</p>
+                        <div class="project-tags">
+                            <span class="tag">Web</span>
+                            <span class="tag">Design</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -672,73 +594,53 @@
     <section class="tutorials" id="tutorials">
         <div class="container">
             <h2 class="section-title">Video Tutorials</h2>
-            <div class="scroll-container">
-                <div class="tutorial-scroll-container" id="tutorialsContainer">
-                    <!-- Tutorial 1 -->
-                    <div class="tutorial-card" data-search="How To Use This Website Tutorial Guide">
-                        <div class="tutorial-img">
-                            <div class="play-icon"></div>
-                            <img src="/api/placeholder/400/250" alt="Tutorial 1">
-                        </div>
-                        <div class="tutorial-content">
-                            <h3>Coming Soon (How To Use This Website)</h3>
-                            <p>Learn how to use this website step by step.</p>
-                        </div>
+            <div class="tutorial-scroll-container" id="tutorialsContainer">
+                <!-- Tutorial 1 -->
+                <div class="tutorial-card" data-search="How To Use This Website Tutorial Guide">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 1">
                     </div>
-                                    
-                    <!-- Tutorial 2 -->
-                    <div class="tutorial-card" data-search="Report Generator Tool Tutorial Guide Excel VBA">
-                        <div class="tutorial-img">
-                            <div class="play-icon"></div>
-                            <img src="/api/placeholder/400/250" alt="Tutorial 2">
-                        </div>
-                        <div class="tutorial-content">
-                            <h3>Coming Soon (How To Use My Report Generator Tool)</h3>
-                            <p>Register students and generate their report cards.</p>
-                        </div>
-                    </div>
-                                    
-                    <!-- Tutorial 3 -->
-                    <div class="tutorial-card" data-search="Phishing Websites Security Tutorial Cybersecurity">
-                        <div class="tutorial-img">
-                            <div class="play-icon"></div>
-                            <img src="/api/placeholder/400/250" alt="Tutorial 3">
-                        </div>
-                        <div class="tutorial-content">
-                            <h3>Coming Soon (I Made Phishing Websites)</h3>
-                            <p>See how easy it can be to hack into your accounts if you are careless.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional tutorial for scrolling -->
-                    <div class="tutorial-card" data-search="Future Tutorial Education">
-                        <div class="tutorial-img">
-                            <div class="play-icon"></div>
-                            <img src="/api/placeholder/400/250" alt="Tutorial 4">
-                        </div>
-                        <div class="tutorial-content">
-                            <h3>Future Tutorial</h3>
-                            <p>More educational content coming soon.</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Additional tutorial for scrolling -->
-                    <div class="tutorial-card" data-search="Future Tutorial Education">
-                        <div class="tutorial-img">
-                            <div class="play-icon"></div>
-                            <img src="/api/placeholder/400/250" alt="Tutorial 5">
-                        </div>
-                        <div class="tutorial-content">
-                            <h3>Future Tutorial</h3>
-                            <p>More educational content coming soon.</p>
-                        </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (How To Use This Website)</h3>
+                        <p>Learn how to use this website step by step.</p>
                     </div>
                 </div>
-                <div class="scroll-arrow left" onclick="scrollTutorials(-1)">
-                    <i class="fas fa-chevron-left"></i>
+                
+                <!-- Tutorial 2 -->
+                <div class="tutorial-card" data-search="Report Generator Tool Tutorial Guide Excel VBA">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 2">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (How To Use My Report Generator Tool)</h3>
+                        <p>Register students and generate their report cards.</p>
+                    </div>
                 </div>
-                <div class="scroll-arrow right" onclick="scrollTutorials(1)">
-                    <i class="fas fa-chevron-right"></i>
+                
+                <!-- Tutorial 3 -->
+                <div class="tutorial-card" data-search="Phishing Websites Security Tutorial Cybersecurity">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 3">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Coming Soon (I Made Phishing Websites)</h3>
+                        <p>See how easy it can be to hack into your accounts if you are careless.</p>
+                    </div>
+                </div>
+
+                <!-- Additional tutorial for scrolling -->
+                <div class="tutorial-card" data-search="Future Tutorial Education">
+                    <div class="tutorial-img">
+                        <div class="play-icon"></div>
+                        <img src="/api/placeholder/400/250" alt="Tutorial 4">
+                    </div>
+                    <div class="tutorial-content">
+                        <h3>Future Tutorial</h3>
+                        <p>More educational content coming soon.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -820,6 +722,8 @@
         </div>
     </footer>
 
+
+
     <script>
         // Add smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -865,8 +769,8 @@
                 const title = card.querySelector('h3').textContent.toLowerCase();
                 const description = card.querySelector('p').textContent.toLowerCase();
                 
-                if (searchData.includes(searchTerm) ||
-                    title.includes(searchTerm) ||
+                if (searchData.includes(searchTerm) || 
+                    title.includes(searchTerm) || 
                     description.includes(searchTerm)) {
                     
                     const type = card.classList.contains('project-card') ? 'Project' : 'Tutorial';
@@ -884,50 +788,51 @@
             
             displayResults(results, searchTerm);
         }
-
-        // Display search results function displayResults(results, searchTerm) {
-            searchResults.innerHTML = '';
+        
+// Display search results
+function displayResults(results, searchTerm) {
+    searchResults.innerHTML = '';
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
+    } else {
+        results.forEach(result => {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'search-result-item';
+            resultElement.innerHTML = `
+                <h4><span class="result-type">${result.type}</span>${result.title}</h4>
+                <p>${result.description}</p>
+            `;
             
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
-            } else {
-                results.forEach(result => {
-                    const resultElement = document.createElement('div');
-                    resultElement.className = 'search-result-item';
-                    resultElement.innerHTML = `
-                        <h4><span class="result-type">${result.type}</span>${result.title}</h4>
-                        <p>${result.description}</p>
-                    `;
-                    
-                    resultElement.addEventListener('click', () => {
-                        // First ensure all cards are visible
-                        allCards.forEach(card => card.style.display = '');
-                        
-                        // Scroll to the specific card
-                        result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        
-                        // Apply more noticeable highlight animation
-                        result.element.style.boxShadow = '0 0 0 4px rgba(52, 152, 219, 0.7)';
-                        result.element.style.transform = 'scale(1.03)';
-                        result.element.style.transition = 'all 0.3s ease';
-                        
-                        // Reset the highlight after animation
-                        setTimeout(() => {
-                            result.element.style.boxShadow = '';
-                            result.element.style.transform = '';
-                        }, 2500);
-                        
-                        // Close search results
-                        searchResults.style.display = 'none';
-                        searchInput.value = '';
-                    });
-                    
-                    searchResults.appendChild(resultElement);
-                });
-            }
+            resultElement.addEventListener('click', () => {
+                // First ensure all cards are visible
+                allCards.forEach(card => card.style.display = '');
+                
+                // Scroll to the specific card
+                result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Apply more noticeable highlight animation
+                result.element.style.boxShadow = '0 0 0 4px rgba(52, 152, 219, 0.7)';
+                result.element.style.transform = 'scale(1.03)';
+                result.element.style.transition = 'all 0.3s ease';
+                
+                // Reset the highlight after animation
+                setTimeout(() => {
+                    result.element.style.boxShadow = '';
+                    result.element.style.transform = '';
+                }, 2500);
+                
+                // Close search results
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+            });
             
-            searchResults.style.display = 'block';
-        }
+            searchResults.appendChild(resultElement);
+        });
+    }
+    
+    searchResults.style.display = 'block';
+}
         
         // Event listeners
         searchInput.addEventListener('input', () => {
@@ -958,8 +863,8 @@
                     const title = card.querySelector('h3').textContent.toLowerCase();
                     const description = card.querySelector('p').textContent.toLowerCase();
                     
-                    if (searchData.includes(searchTerm) ||
-                        title.includes(searchTerm) ||
+                    if (searchData.includes(searchTerm) || 
+                        title.includes(searchTerm) || 
                         description.includes(searchTerm)) {
                         card.style.display = '';
                     } else {
@@ -968,60 +873,13 @@
                 });
                 
                 // Scroll to projects section if there are results
-                if (document.querySelector('.project-card[style=""]') ||
+                if (document.querySelector('.project-card[style=""]') || 
                     document.querySelector('.tutorial-card[style=""]')) {
                     document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
                 }
                 
                 searchResults.style.display = 'none';
             }
-        });
-
-        // Horizontal scrolling functions
-        function scrollProjects(direction) {
-            const container = document.getElementById('projectsContainer');
-            const scrollAmount = 350; // Adjust this value as needed
-            container.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-
-        function scrollTutorials(direction) {
-            const container = document.getElementById('tutorialsContainer');
-            const scrollAmount = 350; // Adjust this value as needed
-            container.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-
-        // Show/hide arrows based on scroll position
-        function updateScrollArrows() {
-            const projectsContainer = document.getElementById('projectsContainer');
-            const tutorialsContainer = document.getElementById('tutorialsContainer');
-            
-            const projectLeftArrow = document.querySelector('.projects .scroll-arrow.left');
-            const projectRightArrow = document.querySelector('.projects .scroll-arrow.right');
-            const tutorialLeftArrow = document.querySelector('.tutorials .scroll-arrow.left');
-            const tutorialRightArrow = document.querySelector('.tutorials .scroll-arrow.right');
-            
-            // Projects container
-            projectLeftArrow.style.display = projectsContainer.scrollLeft <= 0 ? 'none' : 'flex';
-            projectRightArrow.style.display = projectsContainer.scrollLeft + projectsContainer.clientWidth >= projectsContainer.scrollWidth - 1 ? 'none' : 'flex';
-            
-            // Tutorials container
-            tutorialLeftArrow.style.display = tutorialsContainer.scrollLeft <= 0 ? 'none' : 'flex';
-            tutorialRightArrow.style.display = tutorialsContainer.scrollLeft + tutorialsContainer.clientWidth >= tutorialsContainer.scrollWidth - 1 ? 'none' : 'flex';
-        }
-
-        // Initialize arrows on load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateScrollArrows();
-            
-            // Update arrows on scroll
-            document.getElementById('projectsContainer').addEventListener('scroll', updateScrollArrows);
-            document.getElementById('tutorialsContainer').addEventListener('scroll', updateScrollArrows);
         });
     </script>
 
@@ -1083,5 +941,6 @@
 
     <button id="installBtn" style="display: none;">Install App</button>
     <script src="/main.js"></script>
+    
 </body>
 </html>
