@@ -264,7 +264,7 @@ function downloadFile(filename, progressId, btnId) {
                 // Reset button and progress
                 setTimeout(() => {
                     downloadBtn.disabled = false;
-                    downloadBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Download Complete';
+                    downloadBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Download Started';
                     setTimeout(() => {
                         downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> ' + 
                             (filename.includes('Book1') ? 'Download Workbook' : 'Download Template');
