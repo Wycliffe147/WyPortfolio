@@ -59,8 +59,8 @@
             100% { opacity: 1; }
         }
     </style>
-
-        <style>
+        
+    <style>
         body {
             margin: 0;
             padding: 0;
@@ -101,7 +101,6 @@
             }
         }
     </style>
-
 </head>
 
 <body>
@@ -143,8 +142,7 @@
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900">The Working Area</h3>
                             <p class="text-blue-700 text-sm mt-1">Book1.xlsm</p>
-
-                        </div>
+                         </div>
                     </div>
                     <p class="text-blue-700 mt-4">
                         Comprehensive workbook with advanced macros, formulas, and automation tools.
@@ -152,7 +150,7 @@
                     <div class="mt-6">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-blue-700">File size: 9.09MB</span>
-                            <span class="text-sm text-blue-700">Version: 1.3</span>
+                            <span class="text-sm text-blue-700">Version: 1.5.1</span>
                         </div>
                         <div class="bg-blue-200 rounded-full h-2">
                             <div class="progress-bar bg-blue-600 h-2 rounded-full" id="book1-progress"></div>
@@ -181,8 +179,7 @@
                         <div>
                             <h3 class="text-xl font-semibold text-blue-900">The Template</h3>
                             <p class="text-blue-700 text-sm mt-1">Template.xlsm</p>
-
-                        </div>
+                         </div>
                     </div>
                     <p class="text-blue-700 mt-4">
                         Clean template with pre-built macros and formatting for an automated setup.
@@ -205,6 +202,45 @@
                     >
                         <i class="fas fa-download mr-2"></i>
                         Download Template
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Info PDF Card -->
+        <div class="grid md:grid-cols-1 gap-8 max-w-4xl mx-auto mt-8">
+            <div class="file-card bg-white rounded-xl overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-start">
+                        <div class="bg-blue-100 p-4 rounded-lg mr-4">
+                            <i class="fas fa-file-pdf text-red-500 text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-blue-900">Project Documentation</h3>
+                            <p class="text-blue-700 text-sm mt-1">Project_Info.pdf</p>
+                         </div>
+                    </div>
+                    <p class="text-blue-700 mt-4">
+                        Detailed documentation about the project including setup instructions, features, and usage guidelines.
+                    </p>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-blue-700">File size: 2.5MB</span>
+                            <span class="text-sm text-blue-700">Version: 1.0</span>
+                        </div>
+                        <div class="bg-blue-200 rounded-full h-2">
+                            <div class="progress-bar bg-red-500 h-2 rounded-full" id="pdf-progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
+                    <button 
+                        id="pdf-btn"
+                        class="download-btn w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center"
+                        onclick="downloadFile('Project_Info.pdf', 'pdf-progress', 'pdf-btn')"
+                    >
+                        <i class="fas fa-download mr-2"></i>
+                        Download Documentation
                     </button>
                 </div>
             </div>
@@ -240,16 +276,16 @@
 function downloadFile(filename, progressId, btnId) {
     const progressBar = document.getElementById(progressId);
     const downloadBtn = document.getElementById(btnId);
-    
+        
     let progress = 0;
     downloadBtn.disabled = true;
     downloadBtn.innerHTML = '<i class="fas fa-spinner animate-spin mr-2"></i> Downloading...';
-    
+
     const interval = setInterval(() => {
         progress += Math.random() * 10;
         if (progress > 100) progress = 100;
         progressBar.style.width = progress + '%';
-        
+                
         if (progress === 100) {
             clearInterval(interval);
             setTimeout(() => {
@@ -260,14 +296,15 @@ function downloadFile(filename, progressId, btnId) {
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                
+                                
                 // Reset button and progress
                 setTimeout(() => {
                     downloadBtn.disabled = false;
                     downloadBtn.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Download Started';
                     setTimeout(() => {
                         downloadBtn.innerHTML = '<i class="fas fa-download mr-2"></i> ' + 
-                            (filename.includes('Book1') ? 'Download Workbook' : 'Download Template');
+                             (filename.includes('Book1') ? 'Download Workbook' : 
+                             filename.includes('Template') ? 'Download Template' : 'Download Documentation');
                         progressBar.style.width = '0%';
                     }, 2000);
                 }, 500);
