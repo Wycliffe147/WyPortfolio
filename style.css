@@ -243,18 +243,55 @@ nav ul li a:hover {
     transform: translateY(-10px);
 }
 
+/* IMPROVED IMAGE SIZING FOR PROJECT CARDS */
 .project-img {
     height: 200px;
-    background-color: #ddd;
+    background-color: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid #eee;
 }
 
 .project-img img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Changed from cover to contain */
+    transition: transform 0.3s ease;
+    /* Center the image if it doesn't fill the container */
+    display: block;
+    margin: auto;
+}
+
+/* Hover effect for project images */
+.project-card:hover .project-img img {
+    transform: scale(1.05);
+}
+
+/* For images that are too small, we can add a minimum size */
+.project-img img[src*="ico"], 
+.project-img img[src*="icon"] {
+    min-width: 80px;
+    min-height: 80px;
+}
+
+/* Alternative sizing option - you can add this class to specific images */
+.project-img.fill-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Alternative sizing option - for images that should maintain aspect ratio but fill width */
+.project-img.fit-width img {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .project-content {
@@ -300,19 +337,32 @@ nav ul li a:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* IMPROVED IMAGE SIZING FOR TUTORIAL CARDS */
 .tutorial-img {
     height: 180px;
-    background-color: #ddd;
+    background-color: #f8f9fa;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #eee;
 }
 
 .tutorial-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Changed from cover to contain */
+    display: block;
+    margin: auto;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect for tutorial images */
+.tutorial-card:hover .tutorial-img img {
+    transform: scale(1.05);
 }
 
 .play-icon {
@@ -324,6 +374,12 @@ nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.tutorial-card:hover .play-icon {
+    transform: scale(1.1);
 }
 
 .play-icon:after {
@@ -351,18 +407,36 @@ nav ul li a:hover {
     gap: 40px;
 }
 
+/* IMPROVED IMAGE SIZING FOR ABOUT SECTION */
 .about-img {
     flex: 1;
     height: 300px;
-    background-color: #ddd;
+    background-color: #f8f9fa;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    border: 1px solid #eee;
 }
 
 .about-img img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain; /* Better for profile photos */
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+/* Hover effect for about image */
+.about-img:hover img {
+    transform: scale(1.02);
+}
+
+/* Alternative option for about image to fill container */
+.about-img.profile-cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -501,6 +575,62 @@ footer {
 .highlight {
     background-color: #fffacd;
     font-weight: bold;
+}
+
+/* ADDITIONAL IMAGE UTILITY CLASSES */
+/* Add these classes to image containers for different sizing behaviors */
+
+/* Force image to fill container completely */
+.img-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+}
+
+/* Keep aspect ratio, fit within container */
+.img-contain img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain !important;
+}
+
+/* Stretch image to fill container (may distort) */
+.img-fill img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill !important;
+}
+
+/* Scale down large images, keep small images original size */
+.img-scale-down img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: scale-down !important;
+}
+
+/* Center image without scaling */
+.img-none img {
+    object-fit: none !important;
+    object-position: center;
+}
+
+/* Responsive images that adapt to screen size */
+@media (max-width: 768px) {
+    .project-img,
+    .tutorial-img {
+        height: 150px; /* Smaller on mobile */
+    }
+    
+    .about-img {
+        height: 250px; /* Smaller on mobile */
+    }
+    
+    /* On mobile, you might want images to fill more space */
+    .project-img img,
+    .tutorial-img img {
+        min-width: 120px;
+        min-height: 120px;
+    }
 }
 
 /* Responsive Design */
