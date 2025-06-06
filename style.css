@@ -92,6 +92,7 @@ nav ul li a:hover {
     top: 50%;
     transform: translateY(-50%);
     color: white;
+    pointer-events: none;
 }
 
 .search-input:focus + .search-icon {
@@ -131,25 +132,100 @@ nav ul li a:hover {
     background-color: #1a252f;
 }
 
-/* Projects Section */
-.projects {
-    padding: 80px 0;
+/* Scroll wrapper with navigation arrows */
+.scroll-wrapper {
     position: relative;
 }
 
-.section-title {
-    text-align: center;
-    margin-bottom: 50px;
-    font-size: 36px;
+.scroll-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(52, 152, 219, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
 }
 
-.project-scroll-container {
+.scroll-wrapper:hover .scroll-nav-btn,
+.scroll-wrapper:focus-within .scroll-nav-btn {
+    opacity: 1;
+    visibility: visible;
+}
+
+.scroll-nav-btn:hover {
+    background-color: rgba(52, 152, 219, 1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.scroll-nav-btn.prev {
+    left: -25px;
+}
+
+.scroll-nav-btn.next {
+    right: -25px;
+}
+
+.scroll-nav-btn:after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+}
+
+.scroll-nav-btn.prev:after {
+    border-top: 8px solid transparent;
+    border-right: 12px solid white;
+    border-bottom: 8px solid transparent;
+    margin-right: 2px;
+}
+
+.scroll-nav-btn.next:after {
+    border-top: 8px solid transparent;
+    border-left: 12px solid white;
+    border-bottom: 8px solid transparent;
+    margin-left: 2px;
+}
+
+/* Common styles for scroll containers */
+.project-scroll-container,
+.tutorial-scroll-container {
     display: flex;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     gap: 30px;
     padding-bottom: 20px;
     -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    /* Hide scrollbar but keep functionality */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.project-scroll-container::-webkit-scrollbar,
+.tutorial-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Projects Section */
+.projects {
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 50px;
+    font-size: 36px;
 }
 
 .project-card {
@@ -173,6 +249,12 @@ nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.project-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .project-content {
@@ -208,15 +290,6 @@ nav ul li a:hover {
     background-color: #ecf0f1;
 }
 
-.tutorial-scroll-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 30px;
-    padding-bottom: 20px;
-    -webkit-overflow-scrolling: touch;
-}
-
 .tutorial-card {
     flex: 0 0 auto;
     width: 300px;
@@ -234,6 +307,12 @@ nav ul li a:hover {
     align-items: center;
     justify-content: center;
     position: relative;
+}
+
+.tutorial-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .play-icon {
@@ -280,6 +359,13 @@ nav ul li a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.about-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .about-text {
@@ -365,6 +451,13 @@ footer {
     z-index: 10;
     max-height: 400px;
     overflow-y: auto;
+    /* Hide scrollbar */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.search-results::-webkit-scrollbar {
+    display: none;
 }
 
 .search-result-item {
@@ -399,65 +492,18 @@ footer {
     margin-right: 8px;
 }
 
-/* No Results */
 .no-results {
     padding: 20px;
     text-align: center;
     color: #666;
 }
 
-/* Scroll Indicator */
-.scroll-indicator {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    color: #3498db;
-    font-weight: bold;
-    opacity: 0.8;
-    animation: bounce 2s infinite;
-}
-
-.scroll-indicator i {
-    margin-left: 5px;
-    font-size: 20px;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(-50%) translateX(0);
-    }
-    40% {
-        transform: translateY(-50%) translateX(5px);
-    }
-    60% {
-        transform: translateY(-50%) translateX(3px);
-    }
-}
-
-/* Hide scrollbar but keep functionality */
-.project-scroll-container::-webkit-scrollbar,
-.tutorial-scroll-container::-webkit-scrollbar,
-.search-results::-webkit-scrollbar {
-    display: none;
-}
-
-.project-scroll-container,
-.tutorial-scroll-container,
-.search-results {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-/* Highlight matching text */
 .highlight {
     background-color: #fffacd;
     font-weight: bold;
 }
 
-/* Responsive Adjustments */
+/* Responsive Design */
 @media (max-width: 1024px) {
     .search-input {
         width: 200px;
@@ -469,10 +515,6 @@ footer {
 }
 
 @media (max-width: 768px) {
-    header {
-        padding: 8px 0;
-    }
-    
     .header-content {
         flex-direction: column;
         text-align: center;
@@ -494,11 +536,6 @@ footer {
         margin: 0;
     }
     
-    nav ul li a {
-        font-size: 14px;
-        padding: 5px 8px;
-    }
-    
     .search-container {
         margin: 0;
         order: 3;
@@ -510,27 +547,35 @@ footer {
     .search-input {
         width: 100%;
         padding: 8px 12px 8px 35px;
-        font-size: 14px;
     }
     
     .search-input:focus {
         width: 100%;
     }
     
-    .about-content {
+    .about-content,
+    .contact-content {
         flex-direction: column;
     }
     
-    .contact-content {
-        flex-direction: column;
+    /* Mobile navigation arrows */
+    .scroll-nav-btn {
+        opacity: 1;
+        visibility: visible;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .scroll-nav-btn.prev {
+        left: -20px;
+    }
+    
+    .scroll-nav-btn.next {
+        right: -20px;
     }
 }
 
 @media (max-width: 480px) {
-    header {
-        padding: 6px 0;
-    }
-    
     .logo {
         font-size: 18px;
     }
@@ -539,19 +584,26 @@ footer {
         gap: 10px;
     }
     
-    nav ul li a {
-        font-size: 13px;
-        padding: 4px 6px;
-    }
-    
     .search-input {
         padding: 6px 10px 6px 30px;
-        font-size: 13px;
         max-width: 250px;
     }
     
     .search-icon {
         left: 12px;
-        font-size: 14px;
+    }
+    
+    /* Smaller mobile arrows */
+    .scroll-nav-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .scroll-nav-btn.prev {
+        left: -18px;
+    }
+    
+    .scroll-nav-btn.next {
+        right: -18px;
     }
 }
