@@ -373,7 +373,7 @@ function showLoginPrompt() {
                 </svg>
             </div>
             <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50; font-size: 1.5rem;">Welcome to Wy's Portfolio!</h3>
-            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features including the contact form and personalized experience.</p>
+            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features. It's also essential for best management of the website.</p>
         </div>
         <div style="display: flex; gap: 1rem; justify-content: center;">
             <button id="loginNowBtn" style="
@@ -567,7 +567,7 @@ function showLoginPrompt() {
                 </svg>
             </div>
             <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50; font-size: 1.5rem;">Welcome to Wy's Portfolio!</h3>
-            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features including the contact form and personalized experience.</p>
+            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features including the contact form and personalized experience. It's also essential for best management of the website</p>
         </div>
         <div style="display: flex; gap: 1rem; justify-content: center;">
             <button id="loginNowBtn" style="
