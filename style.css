@@ -447,6 +447,54 @@ nav ul li a:hover {
 }
 
 /* Contact Section */
+/* Contact CTA Section - Centered */
+.contact-cta {
+    padding: 80px 0;
+    background-color: #34495e;
+    color: white;
+    text-align: center; /* Center all text content */
+}
+
+.contact-cta-content {
+    max-width: 600px; /* Limit width for better readability */
+    margin: 0 auto; /* Center the content horizontally */
+    padding: 0 20px; /* Add some padding for mobile */
+}
+
+.contact-cta-content h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.contact-cta-content p {
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Enhanced button styling for better centering */
+.contact-cta .btn {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+}
+
+.contact-cta .btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* If you want to add an actual contact form section, use this: */
 .contact {
     padding: 80px 0;
     background-color: #34495e;
@@ -456,23 +504,30 @@ nav ul li a:hover {
 .contact-content {
     display: flex;
     gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    align-items: flex-start;
 }
 
 .contact-info {
     flex: 1;
+    text-align: center;
 }
 
 .contact-form {
     flex: 2;
 }
 
+/* Center the form elements */
 .form-group {
     margin-bottom: 20px;
+    text-align: left; /* Keep form labels left-aligned for readability */
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
+    font-weight: 500;
 }
 
 .form-control {
@@ -480,11 +535,44 @@ nav ul li a:hover {
     padding: 12px;
     border: none;
     border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
 textarea.form-control {
     height: 150px;
     resize: vertical;
+}
+
+/* Center the submit button */
+.contact-form .btn {
+    display: block;
+    margin: 20px auto 0;
+    width: fit-content;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .contact-cta-content {
+        padding: 0 15px;
+    }
+    
+    .contact-cta-content h2 {
+        font-size: 28px;
+    }
+    
+    .contact-cta-content p {
+        font-size: 16px;
+    }
+    
+    .contact-content {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .contact-info {
+        text-align: center;
+    }
 }
 
 /* Footer */
