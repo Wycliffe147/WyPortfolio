@@ -3,91 +3,835 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Wy's Portfolio</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Contact Me - Wycliffe's Portfolio</title>
+    <style>
+        /* Base styles from style.css that contact.html needs */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Contact Page Specific Styles */
+        .contact-hero {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .contact-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .contact-hero p {
+            font-size: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .contact-main {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .contact-info-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .contact-info-card h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            color: #3498db;
+            flex-shrink: 0;
+        }
+
+        .contact-details h3 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        .contact-details p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Authentication Section */
+        .auth-section {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .auth-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .auth-description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Google Sign-In Button Container */
+        .google-signin-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        /* Style the Google button container */
+        #g_id_signin {
+            display: inline-block;
+        }
+
+        /* Loading state for the signin area */
+        .signin-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signin-loading::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e1e8ed;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #3498db;
+        }
+
+        .user-details h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .user-details p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .contact-form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form-card h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            background-color: #f8f9fa;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: white;
+        }
+
+        textarea.form-control {
+            height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-to-home {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2c3e50;
+            padding: 12px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(52, 152, 219, 0.2);
+            z-index: 1000;
+        }
+
+        .back-to-home:hover {
+            background: #3498db;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .security-notice {
+            background: #e8f5e8;
+            border: 1px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .security-notice .notice-icon {
+            color: #27ae60;
+            margin-right: 8px;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c0392b;
+        }
+
+        /* Loading States */
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Success States */
+        .submit-btn.success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .contact-hero h1 {
+                font-size: 36px;
+            }
+            
+            .contact-hero p {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding: 60px 0;
+            }
+            
+            .contact-hero h1 {
+                font-size: 32px;
+            }
+            
+            .contact-hero p {
+                font-size: 16px;
+                padding: 0 20px;
+            }
+            
+            .contact-main {
+                padding: 40px 0;
+            }
+            
+            .contact-info-card,
+            .contact-form-card,
+            .auth-section {
+                padding: 30px 20px;
+            }
+            
+            .contact-grid {
+                gap: 30px;
+            }
+            
+            .back-to-home {
+                position: static;
+                display: inline-block;
+                margin: 20px auto;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <a href="portfolio.html">← Back to Portfolio</a>
+    <!-- Back to Home Button -->
+    <a href="index.html" class="back-to-home">← Back to Portfolio</a>
 
-    <div class="contact-container">
-        <h1>Get In Touch</h1>
-        <p>I'd love to hear from you! Please sign in with Google to ensure secure communication.</p>
+    <!-- Contact Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1>Get In Touch</h1>
+            <p>I'd love to hear from you! Please sign in with Google to ensure secure communication.</p>
+        </div>
+    </section>
 
-        <div class="contact-info">
-            <h2>Contact Information</h2>
-            <div>
-                <p>Email</p>
-                <p>[email protected]</p>
-            </div>
-            <div>
-                <p>Location</p>
-                <p>Mzuzu, Malawi</p>
-            </div>
-            <div>
-                <p>Response Time</p>
-                <p>I will respond when I see the email</p>
-            </div>
-            <div>
-                <p>Security</p>
-                <p>Google authentication required for secure messaging</p>
+    <!-- Main Contact Section -->
+    <section class="contact-main">
+        <div class="container">
+            <div class="contact-grid">
+                <!-- Contact Information -->
+                <div class="contact-info-card">
+                    <h2>Contact Information</h2>
+                    
+                    <div class="contact-item">
+                        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <div class="contact-details">
+                            <h3>Email</h3>
+                            <p>wycliffemwanganda@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <div class="contact-details">
+                            <h3>Location</h3>
+                            <p>Mzuzu, Malawi</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div class="contact-details">
+                            <h3>Response Time</h3>
+                            <p>I will respond when I see the email</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <svg class="contact-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <div class="contact-details">
+                            <h3>Security</h3>
+                            <p>Google authentication required for secure messaging</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authentication/Contact Form -->
+                <div id="authSection" class="auth-section">
+                    <h2>Secure Authentication Required</h2>
+                    <div class="security-notice">
+                        <span class="notice-icon">🔒</span>
+                        <strong>Security Notice:</strong> To prevent spam and ensure secure communication, please authenticate with your Google account before sending a message.
+                    </div>
+                    <p class="auth-description">
+                        Your information is kept private and secure. We only use your Google account to verify your identity and prevent automated spam messages.
+                    </p>
+                    <div id="errorMessage" class="error-message hidden"></div>
+                    
+                    <!-- Google Sign-In Button Container -->
+                    <div class="google-signin-container">
+                        <div id="signinLoadingState" class="signin-loading">Loading Google Sign-In...</div>
+                        <div id="g_id_signin" class="hidden"></div>
+                    </div>
+                </div>
+
+                <div id="contactFormSection" class="contact-form-card hidden">
+                    <div class="user-info">
+                        <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
+                        <div class="user-details">
+                            <h3 id="userName"></h3>
+                            <p id="userEmail"></p>
+                        </div>
+                        <button id="logoutBtn" class="logout-btn">Sign Out</button>
+                    </div>
+                    
+                    <h2>Send Me a Message</h2>
+                    <form action="https://formspree.io/f/manjqdjz" method="POST" id="contactForm">
+                        <input type="hidden" id="senderName" name="sender_name">
+                        <input type="hidden" id="senderEmail" name="sender_email">
+                        <input type="hidden" id="authToken" name="auth_token">
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject *</label>
+                            <input type="text" id="subject" name="subject" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" class="form-control" placeholder="Tell me about your project or inquiry..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="submit-btn" id="submitBtn">Send Secure Message</button>
+                    </form>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="auth-section">
-            <h2>Secure Authentication Required</h2>
-            <p>🔒 Security Notice: To prevent spam and ensure secure communication, please authenticate with your Google account before sending a message.</p>
-            <p>Your information is kept private and secure. We only use your Google account to verify your identity and prevent automated spam messages.</p>
-
-            <div id="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
-
-            <button id="signout" style="display: none;">Sign Out</button>
-
-            <div id="message-form" style="display: none;">
-                <h2>Send Me a Message</h2>
-                <form>
-                    <label for="subject">Subject *</label>
-                    <input type="text" id="subject" required>
-                    <label for="message">Message *</label>
-                    <textarea id="message" required></textarea>
-                    <button type="submit">Send Secure Message</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+    <!-- Footer -->
     <footer>
-        <p>© 2025 Wy'sPortfolio. All Rights Reserved.</p>
+        <div class="container">
+            <p>© 2025 Wy'sPortfolio. All Rights Reserved.</p>
+        </div>
     </footer>
 
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <script>
-        function handleCredentialResponse(response) {
-            console.log("Encoded JWT ID token: " + response.credential);
-            document.getElementById("signout").style.display = "block";
-            document.getElementById("message-form").style.display = "block";
+        // Google Sign-In Configuration
+        let currentUser = null;
+        let isGoogleApiLoaded = false;
+        
+        // Function to show error messages
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            console.error('Google Sign-In Error:', message);
         }
-
-        function signOut() {
-            google.accounts.id.disableAutoSelect();
-            document.getElementById("signout").style.display = "none";
-            document.getElementById("message-form").style.display = "none";
-            google.accounts.id.renderButton(
-                document.getElementById("g_id_signin"),
-                { theme: "outline", size: "large" }
-            );
+        
+        // Function to hide error messages
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.classList.add('hidden');
         }
-
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: "650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com", // Replace with your actual Google Client ID
-                callback: handleCredentialResponse,
+        
+        // Show loading state
+        function showLoadingState() {
+            const loadingState = document.getElementById('signinLoadingState');
+            const signinButton = document.getElementById('g_id_signin');
+            loadingState.classList.remove('hidden');
+            signinButton.classList.add('hidden');
+        }
+        
+        // Hide loading state and show button
+        function showSigninButton() {
+            const loadingState = document.getElementById('signinLoadingState');
+            const signinButton = document.getElementById('g_id_signin');
+            loadingState.classList.add('hidden');
+            signinButton.classList.remove('hidden');
+        }
+        
+        // Initialize Google Sign-In when API loads
+        function initializeGoogleSignIn() {
+            console.log('Initializing Google Sign-In...');
+            
+            try {
+                if (typeof google === 'undefined' || !google.accounts) {
+                    throw new Error('Google Sign-In API not loaded');
+                }
+                
+                // Initialize Google Sign-In
+                google.accounts.id.initialize({
+                    client_id: '650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com',
+                    callback: handleSignInResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false,
+                    use_fedcm_for_prompt: false
+                });
+                
+                // Render the proper Google Sign-In button
+                google.accounts.id.renderButton(
+                    document.getElementById('g_id_signin'),
+                    {
+                        theme: 'outline',
+                        size: 'large',
+                        type: 'standard',
+                        text: 'signin_with',
+                        shape: 'rectangular',
+                        logo_alignment: 'left',
+                        width: 280
+                    }
+                );
+                
+                isGoogleApiLoaded = true;
+                showSigninButton();
+                console.log('Google Sign-In initialized successfully');
+                hideError();
+                
+            } catch (error) {
+                console.error('Failed to initialize Google Sign-In:', error);
+                showError('Failed to load Google Sign-In. Please refresh the page and try again.');
+                // Hide loading state even on error
+                document.getElementById('signinLoadingState').classList.add('hidden');
+            }
+        }
+        
+        // Handle Google Sign-In response
+        function handleSignInResponse(response) {
+            console.log('Sign-in response received');
+            hideError();
+            
+            try {
+                if (!response.credential) {
+                    throw new Error('No credential received from Google');
+                }
+                
+                // Decode the JWT token to get user info
+                const userInfo = parseJwt(response.credential);
+                console.log('User info decoded:', userInfo);
+                
+                currentUser = {
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    picture: userInfo.picture,
+                    token: response.credential
+                };
+                
+                // Store auth info (using memory storage for demo)
+                storeUserSession(currentUser);
+                
+                // Show authenticated state
+                showAuthenticatedView();
+                
+                console.log('User authenticated successfully');
+                
+            } catch (error) {
+                console.error('Error handling sign-in:', error);
+                showError('Authentication failed. Please try again.');
+            }
+        }
+        
+        // Parse JWT token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error('Error parsing JWT:', error);
+                throw new Error('Invalid token format');
+            }
+        }
+        
+        // Store user session (using memory for demo - in production use secure storage)
+        function storeUserSession(user) {
+            try {
+                // Using temporary in-memory storage since we can't use localStorage in Claude artifacts
+                window.tempUserSession = user;
+            } catch (error) {
+                console.error('Error storing session:', error);
+            }
+        }
+        
+        // Check for existing authentication
+        function checkExistingAuth() {
+            try {
+                if (window.tempUserSession) {
+                    currentUser = window.tempUserSession;
+                    showAuthenticatedView();
+                    console.log('Existing authentication found');
+                }
+            } catch (error) {
+                console.error('Error checking existing auth:', error);
+                window.tempUserSession = null;
+            }
+        }
+        
+        // Show authenticated view
+        function showAuthenticatedView() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('contactFormSection').classList.remove('hidden');
+            
+            // Populate user info
+            document.getElementById('userAvatar').src = currentUser.picture || '';
+            document.getElementById('userName').textContent = currentUser.name || '';
+            document.getElementById('userEmail').textContent = currentUser.email || '';
+            
+            // Pre-fill hidden form fields
+            document.getElementById('senderName').value = currentUser.name || '';
+            document.getElementById('senderEmail').value = currentUser.email || '';
+            document.getElementById('authToken').value = currentUser.token || '';
+        }
+        
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            console.log('Logging out...');
+            
+            // Clear session
+            window.tempUserSession = null;
+            currentUser = null;
+            
+            // Reset view
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('contactFormSection').classList.add('hidden');
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+            
+            // Sign out from Google
+            if (isGoogleApiLoaded) {
+                google.accounts.id.disableAutoSelect();
+            }
+            
+            console.log('Logged out successfully');
+        });
+        
+        // Form submission handling
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const originalBtnText = submitBtn.textContent;
+        
+        form.addEventListener('submit', function(e) {
+            // Verify user is still authenticated
+            if (!currentUser) {
+                e.preventDefault();
+                alert('Please sign in again to send your message.');
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.textContent = 'Sending Secure Message...';
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            
+            // Reset after response (formspree will handle the actual submission)
+            setTimeout(() => {
+                submitBtn.textContent = 'Message Sent Securely!';
+                submitBtn.classList.remove('loading');
+                submitBtn.classList.add('success');
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    // Reset message and subject only, keep user info
+                    document.getElementById('subject').value = '';
+                    document.getElementById('message').value = '';
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.classList.remove('success');
+                    submitBtn.disabled = false;
+                }, 2000);
+            }, 1000);
+        });
+        
+        // Enhanced form interactions
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
             });
-            google.accounts.id.renderButton(
-                document.getElementById("g_id_signin"),
-                { theme: "outline", size: "large" }
-            );
-        };
-
-        document.getElementById("signout").onclick = signOut;
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+            
+            // Real-time validation feedback
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.style.borderColor = '#27ae60';
+                } else if (this.value.length > 0) {
+                    this.style.borderColor = '#e74c3c';
+                } else {
+                    this.style.borderColor = '#e1e8ed';
+                }
+            });
+        });
+        
+        // Initialize everything when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, checking for existing auth...');
+            showLoadingState();
+            checkExistingAuth();
+        });
+        
+        // Initialize Google Sign-In when the script loads
+        window.addEventListener('load', function() {
+            console.log('Window loaded, initializing Google Sign-In...');
+            
+            // Wait a bit for the Google script to fully load
+            setTimeout(() => {
+                initializeGoogleSignIn();
+            }, 1000);
+        });
+        
+        // Fallback initialization with multiple attempts
+        let initAttempts = 0;
+        const maxAttempts = 5;
+        
+        function attemptInitialization() {
+            if (!isGoogleApiLoaded && initAttempts < maxAttempts) {
+                initAttempts++;
+                console.log(`Attempting Google Sign-In initialization (attempt ${initAttempts}/${maxAttempts})...`);
+                
+                if (typeof google !== 'undefined' && google.accounts) {
+                    initializeGoogleSignIn();
+                } else {
+                    setTimeout(attemptInitialization, 2000);
+                }
+            } else if (initAttempts >= maxAttempts && !isGoogleApiLoaded) {
+                console.error('Failed to initialize Google Sign-In after maximum attempts');
+                showError('Failed to load Google Sign-In. Please refresh the page and try again.');
+                document.getElementById('signinLoadingState').classList.add('hidden');
+            }
+        }
+        
+        // Start the initialization attempts after a short delay
+        setTimeout(attemptInitialization, 2000);
     </script>
 </body>
 </html>
