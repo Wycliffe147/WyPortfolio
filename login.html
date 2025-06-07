@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Wycliffe's Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 12px;
+            padding: 48px 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+        }
+
+        .login-header h1 {
+            color: #1a202c;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .signin-section {
+            margin: 32px 0;
+        }
+
+        .signin-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: #718096;
+            font-size: 14px;
+            padding: 16px 24px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .signin-loading::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            color: #c53030;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .features {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .features h3 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            text-align: left;
+            space-y: 12px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+        }
+
+        .feature-icon {
+            width: 16px;
+            height: 16px;
+            color: #4299e1;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .nav-links {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .nav-link {
+            color: #4299e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-link:hover {
+            background: #ebf8ff;
+        }
+
+        .nav-link.primary {
+            background: #4299e1;
+            color: white;
+        }
+
+        .nav-link.primary:hover {
+            background: #3182ce;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus styles */
+        .nav-link:focus,
+        button:focus {
+            outline: 2px solid #4299e1;
+            outline-offset: 2px;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+            .login-container {
+                padding: 32px 24px;
+                margin: 16px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-link {
+                text-align: center;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Sign In</h1>
+            <p>Access secure contact features and priority support</p>
+        </div>
+
+        <div class="signin-section">
+            <div id="errorMessage" class="error-message"></div>
+            
+            <div class="google-signin-container">
+                <div id="signinLoadingState" class="signin-loading">
+                    <span class="sr-only">Loading Google Sign-In...</span>
+                    Loading sign-in...
+                </div>
+                <div id="g_id_signin" class="hidden"></div>
+            </div>
+        </div>
+
+        <div class="features">
+            <h3>Benefits</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <span class="feature-text">Secure messaging system</span>
+                </div>
+                <div class="feature-item">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <span class="feature-text">Faster communication</span>
+                </div>
+                <div class="feature-item">
+                    <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="feature-text">Priority response time</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">← Back</a>
+            <a href="contact.html" class="nav-link primary">Continue</a>
+        </div>
+    </div>
+
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script>
+        let isGoogleApiLoaded = false;
+        let currentUser = null;
+
+        function setCookie(name, value, days = 7) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/;secure;samesite=strict`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) {
+                    try {
+                        return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+                    } catch (e) {
+                        return null;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+        }
+
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            if (errorDiv) {
+                errorDiv.classList.remove('show');
+            }
+        }
+
+        function showLoadingState() {
+            const loadingState = document.getElementById('signinLoadingState');
+            const signinButton = document.getElementById('g_id_signin');
+            if (loadingState) loadingState.classList.remove('hidden');
+            if (signinButton) signinButton.classList.add('hidden');
+        }
+
+        function showSigninButton() {
+            const loadingState = document.getElementById('signinLoadingState');
+            const signinButton = document.getElementById('g_id_signin');
+            if (loadingState) loadingState.classList.add('hidden');
+            if (signinButton) signinButton.classList.remove('hidden');
+        }
+
+        function initializeGoogleSignIn() {
+            try {
+                if (typeof google === 'undefined' || !google.accounts) {
+                    throw new Error('Google Sign-In API not loaded');
+                }
+                
+                google.accounts.id.initialize({
+                    client_id: '650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com',
+                    callback: handleSignInResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false
+                });
+                
+                const signinContainer = document.getElementById('g_id_signin');
+                if (signinContainer) {
+                    google.accounts.id.renderButton(
+                        signinContainer,
+                        {
+                            theme: 'outline',
+                            size: 'large',
+                            type: 'standard',
+                            text: 'signin_with',
+                            shape: 'rectangular',
+                            width: 280
+                        }
+                    );
+                }
+                
+                isGoogleApiLoaded = true;
+                showSigninButton();
+                hideError();
+                
+            } catch (error) {
+                showError('Failed to load sign-in. Please refresh and try again.');
+                const loadingState = document.getElementById('signinLoadingState');
+                if (loadingState) loadingState.classList.add('hidden');
+            }
+        }
+
+        function handleSignInResponse(response) {
+            hideError();
+            
+            try {
+                if (!response.credential) {
+                    throw new Error('No credential received');
+                }
+                
+                const userInfo = parseJwt(response.credential);
+                
+                currentUser = {
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    picture: userInfo.picture,
+                    token: response.credential,
+                    signInTime: Date.now()
+                };
+                
+                setCookie('userSession', currentUser, 7);
+                showSuccessAndRedirect();
+                
+            } catch (error) {
+                showError('Authentication failed. Please try again.');
+            }
+        }
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                throw new Error('Invalid token');
+            }
+        }
+
+        function showSuccessAndRedirect() {
+            const container = document.querySelector('.login-container');
+            
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: white;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                border-radius: 12px;
+                z-index: 10;
+            `;
+            
+            successDiv.innerHTML = `
+                <div style="text-align: center;">
+                    <svg style="width: 48px; height: 48px; margin-bottom: 16px; color: #48bb78;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h2 style="color: #2d3748; margin-bottom: 8px; font-size: 20px; font-weight: 600;">Welcome, ${currentUser.name}!</h2>
+                    <p style="color: #718096; margin-bottom: 16px;">Redirecting to contact page...</p>
+                </div>
+            `;
+            
+            container.style.position = 'relative';
+            container.appendChild(successDiv);
+            
+            setTimeout(() => {
+                window.location.href = 'contact.html';
+            }, 1500);
+        }
+
+        function checkExistingAuth() {
+            const session = getCookie('userSession');
+            if (session && session.signInTime) {
+                const sessionAge = Date.now() - session.signInTime;
+                const maxAge = 7 * 24 * 60 * 60 * 1000;
+                
+                if (sessionAge < maxAge) {
+                    currentUser = session;
+                    showSuccessAndRedirect();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!checkExistingAuth()) {
+                showLoadingState();
+            }
+        });
+
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                if (!currentUser) {
+                    initializeGoogleSignIn();
+                }
+            }, 1000);
+        });
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href.includes('contact.html')) {
+                    e.preventDefault();
+                    
+                    if (currentUser) {
+                        window.location.href = 'contact.html';
+                    } else {
+                        showError('Please sign in first to access the contact page.');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
