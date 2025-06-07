@@ -305,3 +305,383 @@ if (typeof module !== 'undefined' && module.exports) {
         initializeContactLinkHandler
     };
 }
+
+
+// Create and show login prompt popup
+function showLoginPrompt() {
+    // Check if popup already exists
+    if (document.getElementById('loginPromptOverlay')) {
+        return;
+    }
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'loginPromptOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    `;
+    
+    // Create popup
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: popupSlideIn 0.3s ease-out;
+    `;
+    
+    // Add animation keyframes
+    if (!document.getElementById('popupAnimationStyles')) {
+        const style = document.createElement('style');
+        style.id = 'popupAnimationStyles';
+        style.textContent = `
+            @keyframes popupSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px) scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    popup.innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10,17 15,12 10,7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+            </div>
+            <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50; font-size: 1.5rem;">Welcome to Wy's Portfolio!</h3>
+            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features including the contact form and personalized experience.</p>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button id="loginNowBtn" style="
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            ">Sign In</button>
+            <button id="laterBtn" style="
+                background: transparent;
+                color: #7f8c8d;
+                border: 2px solid #ecf0f1;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s ease;
+            ">Later</button>
+        </div>
+    `;
+    
+    // Add hover effects
+    const loginBtn = popup.querySelector('#loginNowBtn');
+    const laterBtn = popup.querySelector('#laterBtn');
+    
+    loginBtn.addEventListener('mouseenter', () => {
+        loginBtn.style.transform = 'translateY(-2px)';
+        loginBtn.style.boxShadow = '0 8px 20px rgba(52, 152, 219, 0.4)';
+    });
+    
+    loginBtn.addEventListener('mouseleave', () => {
+        loginBtn.style.transform = 'translateY(0)';
+        loginBtn.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.3)';
+    });
+    
+    laterBtn.addEventListener('mouseenter', () => {
+        laterBtn.style.borderColor = '#bdc3c7';
+        laterBtn.style.color = '#2c3e50';
+    });
+    
+    laterBtn.addEventListener('mouseleave', () => {
+        laterBtn.style.borderColor = '#ecf0f1';
+        laterBtn.style.color = '#7f8c8d';
+    });
+    
+    // Add event listeners
+    loginBtn.addEventListener('click', () => {
+        window.location.href = 'login.html';
+    });
+    
+    laterBtn.addEventListener('click', () => {
+        closeLoginPrompt();
+    });
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeLoginPrompt();
+        }
+    });
+    
+    // Close on Escape key
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+            closeLoginPrompt();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Prevent body scroll when popup is open
+    document.body.style.overflow = 'hidden';
+}
+
+// Close login prompt
+function closeLoginPrompt() {
+    const overlay = document.getElementById('loginPromptOverlay');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.2s ease-out';
+        setTimeout(() => {
+            overlay.remove();
+            document.body.style.overflow = '';
+        }, 200);
+    }
+}
+
+// Check authentication on page load
+function checkAuthOnLoad() {
+    console.log('Checking authentication status on page load...');
+    
+    if (!checkAuthStatus()) {
+        console.log('User not authenticated, showing login prompt...');
+        // Show popup after a short delay for better UX
+        setTimeout(() => {
+            showLoginPrompt();
+        }, 1000);
+    } else {
+        console.log('User is authenticated, no popup needed.');
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing contact link authentication handler...');
+    initializeContactLinkHandler();
+    
+    // Check authentication and show popup if needed
+    checkAuthOnLoad();
+});
+
+
+// Create and show login prompt popup
+function showLoginPrompt() {
+    // Check if popup already exists
+    if (document.getElementById('loginPromptOverlay')) {
+        return;
+    }
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'loginPromptOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    `;
+    
+    // Create popup
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        animation: popupSlideIn 0.3s ease-out;
+    `;
+    
+    // Add animation keyframes
+    if (!document.getElementById('popupAnimationStyles')) {
+        const style = document.createElement('style');
+        style.id = 'popupAnimationStyles';
+        style.textContent = `
+            @keyframes popupSlideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px) scale(0.95);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    popup.innerHTML = `
+        <div style="margin-bottom: 1.5rem;">
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #3498db, #2980b9); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10,17 15,12 10,7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+            </div>
+            <h3 style="margin: 0 0 0.5rem 0; color: #2c3e50; font-size: 1.5rem;">Welcome to Wy's Portfolio!</h3>
+            <p style="margin: 0; color: #7f8c8d; line-height: 1.5;">Sign in to access all features including the contact form and personalized experience.</p>
+        </div>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button id="loginNowBtn" style="
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: white;
+                border: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+            ">Sign In</button>
+            <button id="laterBtn" style="
+                background: transparent;
+                color: #7f8c8d;
+                border: 2px solid #ecf0f1;
+                padding: 0.75rem 1.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.2s ease;
+            ">Later</button>
+        </div>
+    `;
+    
+    // Add hover effects
+    const loginBtn = popup.querySelector('#loginNowBtn');
+    const laterBtn = popup.querySelector('#laterBtn');
+    
+    loginBtn.addEventListener('mouseenter', () => {
+        loginBtn.style.transform = 'translateY(-2px)';
+        loginBtn.style.boxShadow = '0 8px 20px rgba(52, 152, 219, 0.4)';
+    });
+    
+    loginBtn.addEventListener('mouseleave', () => {
+        loginBtn.style.transform = 'translateY(0)';
+        loginBtn.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.3)';
+    });
+    
+    laterBtn.addEventListener('mouseenter', () => {
+        laterBtn.style.borderColor = '#bdc3c7';
+        laterBtn.style.color = '#2c3e50';
+    });
+    
+    laterBtn.addEventListener('mouseleave', () => {
+        laterBtn.style.borderColor = '#ecf0f1';
+        laterBtn.style.color = '#7f8c8d';
+    });
+    
+    // Add event listeners
+    loginBtn.addEventListener('click', () => {
+        window.location.href = 'login.html';
+    });
+    
+    laterBtn.addEventListener('click', () => {
+        closeLoginPrompt();
+    });
+    
+    // Close on overlay click
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeLoginPrompt();
+        }
+    });
+    
+    // Close on Escape key
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape') {
+            closeLoginPrompt();
+            document.removeEventListener('keydown', escapeHandler);
+        }
+    };
+    document.addEventListener('keydown', escapeHandler);
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Prevent body scroll when popup is open
+    document.body.style.overflow = 'hidden';
+}
+
+// Close login prompt
+function closeLoginPrompt() {
+    const overlay = document.getElementById('loginPromptOverlay');
+    if (overlay) {
+        overlay.style.animation = 'fadeOut 0.2s ease-out';
+        setTimeout(() => {
+            overlay.remove();
+            document.body.style.overflow = '';
+        }, 200);
+    }
+}
+
+// Check authentication on page load
+function checkAuthOnLoad() {
+    console.log('Checking authentication status on page load...');
+    
+    if (!checkAuthStatus()) {
+        console.log('User not authenticated, showing login prompt...');
+        // Show popup after a short delay for better UX
+        setTimeout(() => {
+            showLoginPrompt();
+        }, 1000);
+    } else {
+        console.log('User is authenticated, no popup needed.');
+    }
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing contact link authentication handler...');
+    initializeContactLinkHandler();
+    
+    // Check authentication and show popup if needed
+    checkAuthOnLoad();
+});
