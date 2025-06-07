@@ -99,6 +99,70 @@ nav ul li a:hover {
     color: #3498db;
 }
 
+/* Search Results */
+.search-results {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    max-height: 400px;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.search-results::-webkit-scrollbar {
+    display: none;
+}
+
+.search-result-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: #f5f5f5;
+}
+
+.search-result-item h4 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+}
+
+.search-result-item p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.search-result-item .result-type {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-right: 8px;
+}
+
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.highlight {
+    background-color: #fffacd;
+    font-weight: bold;
+}
+
 /* Hero Section */
 .hero {
     padding: 100px 0;
@@ -207,7 +271,6 @@ nav ul li a:hover {
     padding-bottom: 20px;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
-    /* Hide scrollbar but keep functionality */
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
@@ -243,7 +306,6 @@ nav ul li a:hover {
     transform: translateY(-10px);
 }
 
-/* IMPROVED IMAGE SIZING FOR PROJECT CARDS */
 .project-img {
     height: 200px;
     background-color: #f8f9fa;
@@ -260,38 +322,14 @@ nav ul li a:hover {
     max-height: 100%;
     width: auto;
     height: auto;
-    object-fit: contain; /* Changed from cover to contain */
+    object-fit: contain;
     transition: transform 0.3s ease;
-    /* Center the image if it doesn't fill the container */
     display: block;
     margin: auto;
 }
 
-/* Hover effect for project images */
 .project-card:hover .project-img img {
     transform: scale(1.05);
-}
-
-/* For images that are too small, we can add a minimum size */
-.project-img img[src*="ico"], 
-.project-img img[src*="icon"] {
-    min-width: 80px;
-    min-height: 80px;
-}
-
-/* Alternative sizing option - you can add this class to specific images */
-.project-img.fill-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Alternative sizing option - for images that should maintain aspect ratio but fill width */
-.project-img.fit-width img {
-    width: 100%;
-    height: auto;
-    max-height: 100%;
-    object-fit: contain;
 }
 
 .project-content {
@@ -337,7 +375,6 @@ nav ul li a:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* IMPROVED IMAGE SIZING FOR TUTORIAL CARDS */
 .tutorial-img {
     height: 180px;
     background-color: #f8f9fa;
@@ -354,13 +391,12 @@ nav ul li a:hover {
     max-height: 100%;
     width: auto;
     height: auto;
-    object-fit: contain; /* Changed from cover to contain */
+    object-fit: contain;
     display: block;
     margin: auto;
     transition: transform 0.3s ease;
 }
 
-/* Hover effect for tutorial images */
 .tutorial-card:hover .tutorial-img img {
     transform: scale(1.05);
 }
@@ -407,7 +443,6 @@ nav ul li a:hover {
     gap: 40px;
 }
 
-/* IMPROVED IMAGE SIZING FOR ABOUT SECTION */
 .about-img {
     flex: 1;
     height: 300px;
@@ -425,40 +460,31 @@ nav ul li a:hover {
     max-height: 100%;
     width: auto;
     height: auto;
-    object-fit: contain; /* Better for profile photos */
+    object-fit: contain;
     border-radius: 8px;
     transition: transform 0.3s ease;
 }
 
-/* Hover effect for about image */
 .about-img:hover img {
     transform: scale(1.02);
-}
-
-/* Alternative option for about image to fill container */
-.about-img.profile-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .about-text {
     flex: 2;
 }
 
-/* Contact Section */
-/* Contact CTA Section - Centered */
+/* Contact CTA Section */
 .contact-cta {
     padding: 80px 0;
     background-color: #34495e;
     color: white;
-    text-align: center; /* Center all text content */
+    text-align: center;
 }
 
 .contact-cta-content {
-    max-width: 600px; /* Limit width for better readability */
-    margin: 0 auto; /* Center the content horizontally */
-    padding: 0 20px; /* Add some padding for mobile */
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .contact-cta-content h2 {
@@ -474,7 +500,6 @@ nav ul li a:hover {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Enhanced button styling for better centering */
 .contact-cta .btn {
     display: inline-block;
     background-color: #3498db;
@@ -492,87 +517,6 @@ nav ul li a:hover {
     background-color: #2980b9;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-/* If you want to add an actual contact form section, use this: */
-.contact {
-    padding: 80px 0;
-    background-color: #34495e;
-    color: white;
-}
-
-.contact-content {
-    display: flex;
-    gap: 40px;
-    max-width: 1000px;
-    margin: 0 auto;
-    align-items: flex-start;
-}
-
-.contact-info {
-    flex: 1;
-    text-align: center;
-}
-
-.contact-form {
-    flex: 2;
-}
-
-/* Center the form elements */
-.form-group {
-    margin-bottom: 20px;
-    text-align: left; /* Keep form labels left-aligned for readability */
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.form-control {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-textarea.form-control {
-    height: 150px;
-    resize: vertical;
-}
-
-/* Center the submit button */
-.contact-form .btn {
-    display: block;
-    margin: 20px auto 0;
-    width: fit-content;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .contact-cta-content {
-        padding: 0 15px;
-    }
-    
-    .contact-cta-content h2 {
-        font-size: 28px;
-    }
-    
-    .contact-cta-content p {
-        font-size: 16px;
-    }
-    
-    .contact-content {
-        flex-direction: column;
-        gap: 30px;
-    }
-    
-    .contact-info {
-        text-align: center;
-    }
 }
 
 /* Footer */
@@ -598,127 +542,6 @@ footer {
 .social-link:hover {
     transform: translateY(-3px);
     background-color: #ecf0f1;
-}
-
-/* Search Results */
-.search-results {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    max-height: 400px;
-    overflow-y: auto;
-    /* Hide scrollbar */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.search-results::-webkit-scrollbar {
-    display: none;
-}
-
-.search-result-item {
-    padding: 12px 20px;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.search-result-item:hover {
-    background-color: #f5f5f5;
-}
-
-.search-result-item h4 {
-    margin: 0 0 5px 0;
-    color: #2c3e50;
-}
-
-.search-result-item p {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
-}
-
-.search-result-item .result-type {
-    display: inline-block;
-    padding: 2px 8px;
-    background-color: #3498db;
-    color: white;
-    border-radius: 4px;
-    font-size: 12px;
-    margin-right: 8px;
-}
-
-.no-results {
-    padding: 20px;
-    text-align: center;
-    color: #666;
-}
-
-.highlight {
-    background-color: #fffacd;
-    font-weight: bold;
-}
-
-/* ADDITIONAL IMAGE UTILITY CLASSES */
-/* Add these classes to image containers for different sizing behaviors */
-
-/* Force image to fill container completely */
-.img-cover img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover !important;
-}
-
-/* Keep aspect ratio, fit within container */
-.img-contain img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain !important;
-}
-
-/* Stretch image to fill container (may distort) */
-.img-fill img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill !important;
-}
-
-/* Scale down large images, keep small images original size */
-.img-scale-down img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: scale-down !important;
-}
-
-/* Center image without scaling */
-.img-none img {
-    object-fit: none !important;
-    object-position: center;
-}
-
-/* Responsive images that adapt to screen size */
-@media (max-width: 768px) {
-    .project-img,
-    .tutorial-img {
-        height: 150px; /* Smaller on mobile */
-    }
-    
-    .about-img {
-        height: 250px; /* Smaller on mobile */
-    }
-    
-    /* On mobile, you might want images to fill more space */
-    .project-img img,
-    .tutorial-img img {
-        min-width: 120px;
-        min-height: 120px;
-    }
 }
 
 /* Responsive Design */
@@ -771,12 +594,10 @@ footer {
         width: 100%;
     }
     
-    .about-content,
-    .contact-content {
+    .about-content {
         flex-direction: column;
     }
     
-    /* Mobile navigation arrows */
     .scroll-nav-btn {
         opacity: 1;
         visibility: visible;
@@ -790,6 +611,18 @@ footer {
     
     .scroll-nav-btn.next {
         right: -20px;
+    }
+    
+    .contact-cta-content {
+        padding: 0 15px;
+    }
+    
+    .contact-cta-content h2 {
+        font-size: 28px;
+    }
+    
+    .contact-cta-content p {
+        font-size: 16px;
     }
 }
 
@@ -811,7 +644,6 @@ footer {
         left: 12px;
     }
     
-    /* Smaller mobile arrows */
     .scroll-nav-btn {
         width: 35px;
         height: 35px;
