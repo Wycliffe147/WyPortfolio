@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wycliffe's Portfolio - Analytics Dashboard with Google Auth</title>
+    <title>Enhanced Analytics Dashboard - User Data Collection</title>
     <style>
         * {
             margin: 0;
@@ -159,6 +159,7 @@
             justify-content: center;
             margin-right: 15px;
             background: linear-gradient(135deg, #667eea, #764ba2);
+            font-size: 1.5em;
         }
 
         .stat-title {
@@ -228,6 +229,7 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
             overflow-x: auto;
+            margin-bottom: 20px;
         }
 
         .table-title {
@@ -288,18 +290,54 @@
             50% { opacity: 0.3; }
         }
 
-        .privacy-notice {
-            background: rgba(255, 243, 205, 0.95);
-            border: 1px solid #f39c12;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #8b7300;
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
         }
 
-        .privacy-notice h4 {
-            margin-bottom: 10px;
-            color: #f39c12;
+        .status-signed-in {
+            background: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+        }
+
+        .status-anonymous {
+            background: rgba(149, 165, 166, 0.2);
+            color: #7f8c8d;
+        }
+
+        .real-time-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .activity-log {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .activity-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9em;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.8em;
         }
 
         @media (max-width: 768px) {
@@ -325,26 +363,20 @@
     <div class="dashboard-container">
         <!-- Header -->
         <div class="header">
-            <h1>📊 Analytics Dashboard</h1>
-            <p>Real-time insights with Google Account Integration</p>
+            <h1>📊 User Data Analytics</h1>
+            <p>Advanced User Tracking & Google Authentication</p>
             <div class="live-indicator">
                 <div class="live-dot"></div>
-                Live Data Collection
+                Live Data Collection Active
             </div>
-        </div>
-
-        <!-- Privacy Notice -->
-        <div class="privacy-notice">
-            <h4>🔒 Privacy Notice</h4>
-            <p>This demo shows how Google authentication could work. In production, ensure you have proper privacy policies, user consent, and comply with GDPR/privacy regulations. User data should be handled securely and with explicit consent.</p>
         </div>
 
         <!-- Google Authentication Section -->
         <div class="auth-section">
             <div id="signedOutSection">
-                <h3>🔐 Enhanced Analytics with Google Account</h3>
-                <p style="margin: 15px 0;">Sign in with Google to enable personalized analytics tracking</p>
-                <button class="google-signin-btn" onclick="signIn()">
+                <h3>🔐 Enhanced Analytics with Google Sign-In</h3>
+                <p style="margin: 15px 0;">Sign in with Google to enable personalized tracking and enhanced user insights</p>
+                <button class="google-signin-btn" onclick="simulateGoogleSignIn()">
                     <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -361,18 +393,30 @@
                     <div class="user-details">
                         <h3 id="userName">Loading...</h3>
                         <p id="userEmail">Loading...</p>
+                        <p class="timestamp">Signed in: <span id="signInTime"></span></p>
                     </div>
                 </div>
                 <button class="btn btn-danger" onclick="signOut()">Sign Out</button>
             </div>
         </div>
 
+        <!-- Real-time Activity -->
+        <div class="real-time-section">
+            <div class="table-title">⚡ Real-time User Activity</div>
+            <div class="activity-log" id="activityLog">
+                <div class="activity-item">
+                    <strong>Dashboard initialized</strong>
+                    <div class="timestamp" id="initTime"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Controls -->
         <div class="controls">
             <button class="btn" onclick="refreshData()">🔄 Refresh Data</button>
-            <button class="btn" onclick="exportData()">📋 Export Data</button>
-            <button class="btn btn-danger" onclick="clearData()">🗑️ Clear All Data</button>
+            <button class="btn" onclick="exportData()">📋 Export All Data</button>
             <button class="btn" onclick="generateSampleData()">🎲 Generate Sample Data</button>
+            <button class="btn btn-danger" onclick="clearData()">🗑️ Clear All Data</button>
         </div>
 
         <!-- Stats Grid -->
@@ -380,28 +424,28 @@
             <div class="stat-card">
                 <div class="stat-header">
                     <div class="stat-icon">👥</div>
-                    <div class="stat-title">Total Visitors</div>
+                    <div class="stat-title">Total Users</div>
                 </div>
-                <div class="stat-value" id="totalVisitors">0</div>
+                <div class="stat-value" id="totalUsers">0</div>
                 <div class="stat-subtitle">Unique visitors tracked</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">📱</div>
-                    <div class="stat-title">Page Views</div>
+                    <div class="stat-icon">🔐</div>
+                    <div class="stat-title">Google Users</div>
                 </div>
-                <div class="stat-value" id="pageViews">0</div>
-                <div class="stat-subtitle">Total page interactions</div>
+                <div class="stat-value" id="googleUsers">0</div>
+                <div class="stat-subtitle">Signed in with Google</div>
             </div>
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">🔐</div>
-                    <div class="stat-title">Signed-in Users</div>
+                    <div class="stat-icon">📱</div>
+                    <div class="stat-title">Total Sessions</div>
                 </div>
-                <div class="stat-value" id="signedInUsers">0</div>
-                <div class="stat-subtitle">Users with Google accounts</div>
+                <div class="stat-value" id="totalSessions">0</div>
+                <div class="stat-subtitle">Unique sessions recorded</div>
             </div>
 
             <div class="stat-card">
@@ -410,7 +454,7 @@
                     <div class="stat-title">Avg. Session</div>
                 </div>
                 <div class="stat-value" id="avgSession">0m</div>
-                <div class="stat-subtitle">Average time on site</div>
+                <div class="stat-subtitle">Average session duration</div>
             </div>
 
             <div class="stat-card">
@@ -424,59 +468,108 @@
 
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon">🔍</div>
-                    <div class="stat-title">Search Queries</div>
+                    <div class="stat-icon">🖥️</div>
+                    <div class="stat-title">Device Types</div>
                 </div>
-                <div class="stat-value" id="searchQueries">0</div>
-                <div class="stat-subtitle">Total searches performed</div>
+                <div class="stat-value" id="deviceTypes">0</div>
+                <div class="stat-subtitle">Different device types</div>
             </div>
         </div>
 
-        <!-- Data Tables -->
+        <!-- User Sessions Table -->
         <div class="data-table">
-            <div class="table-title">📋 Recent Visitor Data (Enhanced with Google Auth)</div>
-            <table id="visitorTable">
+            <div class="table-title">👤 User Sessions & Google Authentication Status</div>
+            <table id="userTable">
                 <thead>
                     <tr>
                         <th>Timestamp</th>
                         <th>User Status</th>
+                        <th>User Info</th>
                         <th>Location</th>
                         <th>Device</th>
                         <th>Browser</th>
                         <th>Session Duration</th>
-                        <th>Pages Viewed</th>
+                        <th>IP Info</th>
                     </tr>
                 </thead>
-                <tbody id="visitorTableBody">
-                    <!-- Data will be populated by JavaScript -->
+                <tbody id="userTableBody">
+                    <!-- Data populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Google Users Table -->
+        <div class="data-table">
+            <div class="table-title">🔐 Google Authenticated Users</div>
+            <table id="googleUsersTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>First Sign-in</th>
+                        <th>Last Active</th>
+                        <th>Total Sessions</th>
+                        <th>Total Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="googleUsersTableBody">
+                    <!-- Data populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Detailed Analytics Table -->
+        <div class="data-table">
+            <div class="table-title">📊 Detailed User Analytics</div>
+            <table id="analyticsTable">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>User Agent</th>
+                        <th>Screen Resolution</th>
+                        <th>Language</th>
+                        <th>Timezone</th>
+                        <th>Referrer</th>
+                        <th>Page Views</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="analyticsTableBody">
+                    <!-- Data populated by JavaScript -->
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Google Identity Services Library -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
     <script>
-        // Enhanced User Data Collector with Google Authentication
-        class EnhancedUserDataCollector {
+        class AdvancedUserDataCollector {
             constructor() {
-                this.storageKey = 'portfolioAnalytics';
+                this.storageKey = 'advancedUserAnalytics';
                 this.data = this.loadData();
-                this.currentSession = this.initSession();
                 this.currentUser = null;
+                this.currentSession = this.initSession();
+                this.activityLog = [];
+                
                 this.startTracking();
-                this.initGoogleAuth();
+                this.logActivity('Dashboard initialized', 'system');
+                this.getLocationData();
+                this.updateDashboard();
+                
+                // Update dashboard every 10 seconds
+                setInterval(() => {
+                    this.updateDashboard();
+                    this.saveCurrentSession();
+                }, 10000);
             }
 
             loadData() {
                 const stored = localStorage.getItem(this.storageKey);
                 return stored ? JSON.parse(stored) : {
-                    visitors: [],
+                    users: [],
                     sessions: [],
-                    searches: [],
-                    pageViews: [],
-                    googleUsers: []
+                    googleUsers: [],
+                    analytics: []
                 };
             }
 
@@ -485,24 +578,45 @@
             }
 
             initSession() {
+                const sessionId = this.generateId();
                 const sessionData = {
-                    id: this.generateId(),
+                    id: sessionId,
                     startTime: Date.now(),
                     endTime: null,
+                    duration: 0,
                     pageViews: 1,
-                    searches: 0,
+                    clicks: 0,
+                    scrollDepth: 0,
                     userAgent: navigator.userAgent,
                     platform: navigator.platform,
                     language: navigator.language,
+                    languages: navigator.languages,
                     screenResolution: `${screen.width}x${screen.height}`,
                     windowSize: `${window.innerWidth}x${window.innerHeight}`,
+                    colorDepth: screen.colorDepth,
+                    pixelRatio: window.devicePixelRatio,
                     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                     referrer: document.referrer,
-                    isNewVisitor: !localStorage.getItem('hasVisited'),
-                    googleUser: null // Will be populated if user signs in
+                    url: window.location.href,
+                    title: document.title,
+                    cookies: navigator.cookieEnabled,
+                    javaEnabled: navigator.javaEnabled(),
+                    onlineStatus: navigator.onLine,
+                    connection: this.getConnectionInfo(),
+                    batteryLevel: null,
+                    geolocation: null,
+                    ipInfo: null,
+                    fingerprint: this.generateFingerprint(),
+                    googleUser: null,
+                    isNewUser: !localStorage.getItem('hasVisited')
                 };
 
                 localStorage.setItem('hasVisited', 'true');
+                localStorage.setItem('currentSessionId', sessionId);
+                
+                // Get battery info if available
+                this.getBatteryInfo(sessionData);
+                
                 return sessionData;
             }
 
@@ -510,233 +624,517 @@
                 return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
             }
 
-            initGoogleAuth() {
-                // Initialize Google Identity Services
-                window.addEventListener('load', () => {
-                    if (typeof google !== 'undefined') {
-                        google.accounts.id.initialize({
-                            client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your actual client ID
-                            callback: this.handleCredentialResponse.bind(this),
-                            auto_select: false,
-                            cancel_on_tap_outside: false
-                        });
-                    }
-                });
+            generateFingerprint() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'top';
+                ctx.font = '14px Arial';
+                ctx.fillText('Browser fingerprint', 2, 2);
+                
+                return btoa(JSON.stringify({
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    platform: navigator.platform,
+                    screenResolution: `${screen.width}x${screen.height}`,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    canvas: canvas.toDataURL(),
+                    webgl: this.getWebGLInfo()
+                }));
             }
 
-            handleCredentialResponse(response) {
-                // Decode the JWT token (in production, verify server-side)
-                const payload = this.parseJwt(response.credential);
-                
-                this.currentUser = {
-                    id: payload.sub,
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    signInTime: Date.now()
-                };
-
-                // Update current session with user info
-                this.currentSession.googleUser = {
-                    id: this.currentUser.id,
-                    name: this.currentUser.name,
-                    email: this.currentUser.email
-                };
-
-                // Store user info (be careful with privacy!)
-                this.trackGoogleUser(this.currentUser);
-                
-                // Update UI
-                this.updateAuthUI(true);
-                this.updateDashboard();
-            }
-
-            parseJwt(token) {
-                const base64Url = token.split('.')[1];
-                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
-                return JSON.parse(jsonPayload);
-            }
-
-            trackGoogleUser(user) {
-                // Check if user already exists
-                const existingUser = this.data.googleUsers.find(u => u.id === user.id);
-                
-                if (existingUser) {
-                    // Update existing user
-                    existingUser.lastSignIn = user.signInTime;
-                    existingUser.sessionCount = (existingUser.sessionCount || 1) + 1;
-                } else {
-                    // Add new user
-                    this.data.googleUsers.push({
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                        firstSignIn: user.signInTime,
-                        lastSignIn: user.signInTime,
-                        sessionCount: 1
-                    });
-                }
-                
-                this.saveData();
-            }
-
-            updateAuthUI(isSignedIn) {
-                const signedOutSection = document.getElementById('signedOutSection');
-                const signedInSection = document.getElementById('signedInSection');
-                
-                if (isSignedIn && this.currentUser) {
-                    signedOutSection.style.display = 'none';
-                    signedInSection.style.display = 'block';
+            getWebGLInfo() {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                    if (!gl) return null;
                     
-                    document.getElementById('userName').textContent = this.currentUser.name;
-                    document.getElementById('userEmail').textContent = this.currentUser.email;
-                    document.getElementById('userAvatar').src = this.currentUser.picture;
-                } else {
-                    signedOutSection.style.display = 'block';
-                    signedInSection.style.display = 'none';
+                    return {
+                        vendor: gl.getParameter(gl.VENDOR),
+                        renderer: gl.getParameter(gl.RENDERER),
+                        version: gl.getParameter(gl.VERSION)
+                    };
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            getConnectionInfo() {
+                if ('connection' in navigator) {
+                    const conn = navigator.connection;
+                    return {
+                        effectiveType: conn.effectiveType,
+                        downlink: conn.downlink,
+                        rtt: conn.rtt,
+                        saveData: conn.saveData
+                    };
+                }
+                return null;
+            }
+
+            async getBatteryInfo(sessionData) {
+                if ('getBattery' in navigator) {
+                    try {
+                        const battery = await navigator.getBattery();
+                        sessionData.batteryLevel = {
+                            level: battery.level,
+                            charging: battery.charging,
+                            chargingTime: battery.chargingTime,
+                            dischargingTime: battery.dischargingTime
+                        };
+                    } catch (e) {
+                        console.log('Battery API not available');
+                    }
+                }
+            }
+
+            async getLocationData() {
+                try {
+                    // Get IP-based location (using a free service)
+                    const response = await fetch('https://ipapi.co/json/');
+                    const ipData = await response.json();
+                    
+                    this.currentSession.ipInfo = {
+                        ip: ipData.ip,
+                        city: ipData.city,
+                        region: ipData.region,
+                        country: ipData.country_name,
+                        countryCode: ipData.country_code,
+                        timezone: ipData.timezone,
+                        isp: ipData.org
+                    };
+                    
+                    this.logActivity(`Location detected: ${ipData.city}, ${ipData.country_name}`, 'location');
+                } catch (e) {
+                    console.log('Could not get IP location data');
+                }
+
+                // Request geolocation if available
+                if ('geolocation' in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            this.currentSession.geolocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy,
+                                timestamp: position.timestamp
+                            };
+                            this.logActivity('Geolocation accessed', 'location');
+                        },
+                        (error) => {
+                            this.logActivity('Geolocation denied', 'location');
+                        }
+                    );
                 }
             }
 
             startTracking() {
-                // Standard tracking from original code
+                // Track page visibility
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden) {
+                        this.logActivity('Page hidden', 'navigation');
                         this.endSession();
+                    } else {
+                        this.logActivity('Page visible', 'navigation');
                     }
                 });
 
-                window.addEventListener('resize', () => {
-                    this.currentSession.windowSize = `${window.innerWidth}x${window.innerHeight}`;
+                // Track clicks
+                document.addEventListener('click', (e) => {
+                    this.currentSession.clicks++;
+                    this.logActivity(`Clicked: ${e.target.tagName}`, 'interaction');
                 });
 
+                // Track scroll depth
+                let maxScroll = 0;
+                window.addEventListener('scroll', () => {
+                    const scrollPercent = Math.round(
+                        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+                    );
+                    if (scrollPercent > maxScroll) {
+                        maxScroll = scrollPercent;
+                        this.currentSession.scrollDepth = maxScroll;
+                    }
+                });
+
+                // Track window resize
+                window.addEventListener('resize', () => {
+                    this.currentSession.windowSize = `${window.innerWidth}x${window.innerHeight}`;
+                    this.logActivity('Window resized', 'interaction');
+                });
+
+                // Track online/offline status
+                window.addEventListener('online', () => {
+                    this.currentSession.onlineStatus = true;
+                    this.logActivity('Connection restored', 'system');
+                });
+
+                window.addEventListener('offline', () => {
+                    this.currentSession.onlineStatus = false;
+                    this.logActivity('Connection lost', 'system');
+                });
+
+                // Save data before page unload
                 window.addEventListener('beforeunload', () => {
                     this.endSession();
                 });
 
-                setInterval(() => {
-                    this.saveCurrentSession();
-                }, 30000);
+                // Track focus/blur
+                window.addEventListener('focus', () => {
+                    this.logActivity('Window focused', 'interaction');
+                });
+
+                window.addEventListener('blur', () => {
+                    this.logActivity('Window blurred', 'interaction');
+                });
+            }
+
+            logActivity(message, type = 'general') {
+                const activity = {
+                    timestamp: Date.now(),
+                    message,
+                    type,
+                    sessionId: this.currentSession.id,
+                    userId: this.currentUser?.id || 'anonymous'
+                };
+                
+                this.activityLog.unshift(activity);
+                
+                // Keep only last 50 activities
+                if (this.activityLog.length > 50) {
+                    this.activityLog = this.activityLog.slice(0, 50);
+                }
+                
+                this.updateActivityLog();
+            }
+
+            updateActivityLog() {
+                const logContainer = document.getElementById('activityLog');
+                const recentActivities = this.activityLog.slice(0, 10);
+                
+                logContainer.innerHTML = recentActivities.map(activity => `
+                    <div class="activity-item">
+                        <strong>${activity.message}</strong>
+                        <div class="timestamp">${new Date(activity.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `).join('');
+            }
+
+            simulateGoogleSignIn() {
+                // Simulate Google sign-in for demo purposes
+                const demoUsers = [
+                    { id: 'user1', name: 'John Doe', email: 'john@example.com', picture: 'https://via.placeholder.com/50x50/4285f4/ffffff?text=JD' },
+                    { id: 'user2', name: 'Jane Smith', email: 'jane@example.com', picture: 'https://via.placeholder.com/50x50/34a853/ffffff?text=JS' },
+                    { id: 'user3', name: 'Bob Johnson', email: 'bob@example.com', picture: 'https://via.placeholder.com/50x50/ea4335/ffffff?text=BJ' }
+                ];
+                
+                const randomUser = demoUsers[Math.floor(Math.random() * demoUsers.length)];
+                
+                this.currentUser = {
+                    ...randomUser,
+                    signInTime: Date.now()
+                };
+
+this.currentSession.googleUser = this.currentUser;
+                
+                // Add to Google users if not already exists
+                const existingUser = this.data.googleUsers.find(u => u.id === this.currentUser.id);
+                if (!existingUser) {
+                    this.data.googleUsers.push({
+                        ...this.currentUser,
+                        firstSignIn: Date.now(),
+                        lastActive: Date.now(),
+                        totalSessions: 1,
+                        totalTime: 0
+                    });
+                } else {
+                    existingUser.lastActive = Date.now();
+                    existingUser.totalSessions++;
+                }
+                
+                this.logActivity(`Google sign-in: ${this.currentUser.name}`, 'auth');
+                this.showSignedInSection();
+                this.saveData();
+                this.updateDashboard();
+            }
+
+            showSignedInSection() {
+                document.getElementById('signedOutSection').style.display = 'none';
+                document.getElementById('signedInSection').style.display = 'block';
+                
+                document.getElementById('userName').textContent = this.currentUser.name;
+                document.getElementById('userEmail').textContent = this.currentUser.email;
+                document.getElementById('userAvatar').src = this.currentUser.picture;
+                document.getElementById('signInTime').textContent = new Date(this.currentUser.signInTime).toLocaleString();
+            }
+
+            signOut() {
+                this.logActivity(`Google sign-out: ${this.currentUser?.name || 'Unknown'}`, 'auth');
+                this.currentUser = null;
+                this.currentSession.googleUser = null;
+                
+                document.getElementById('signedOutSection').style.display = 'block';
+                document.getElementById('signedInSection').style.display = 'none';
+                
+                this.saveData();
+                this.updateDashboard();
+            }
+
+            saveCurrentSession() {
+                this.currentSession.duration = Date.now() - this.currentSession.startTime;
+                
+                // Update or add current session
+                const existingIndex = this.data.sessions.findIndex(s => s.id === this.currentSession.id);
+                if (existingIndex !== -1) {
+                    this.data.sessions[existingIndex] = { ...this.currentSession };
+                } else {
+                    this.data.sessions.push({ ...this.currentSession });
+                }
+                
+                this.saveData();
             }
 
             endSession() {
                 this.currentSession.endTime = Date.now();
                 this.currentSession.duration = this.currentSession.endTime - this.currentSession.startTime;
                 
-                this.data.sessions.push({...this.currentSession});
+                // Update Google user total time
+                if (this.currentUser) {
+                    const googleUser = this.data.googleUsers.find(u => u.id === this.currentUser.id);
+                    if (googleUser) {
+                        googleUser.totalTime += this.currentSession.duration;
+                    }
+                }
                 
-                if (this.currentSession.isNewVisitor) {
-                    this.data.visitors.push({
+                this.saveCurrentSession();
+                this.logActivity('Session ended', 'system');
+            }
+
+            refreshData() {
+                this.logActivity('Data refreshed', 'system');
+                this.updateDashboard();
+            }
+
+            exportData() {
+                const exportData = {
+                    ...this.data,
+                    currentSession: this.currentSession,
+                    activityLog: this.activityLog,
+                    exportTime: Date.now()
+                };
+                
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `user-analytics-${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                this.logActivity('Data exported', 'system');
+            }
+
+            generateSampleData() {
+                const sampleUserAgents = [
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
+                    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15',
+                    'Mozilla/5.0 (Android 11; Mobile; rv:91.0) Gecko/91.0'
+                ];
+                
+                const sampleLocations = [
+                    { city: 'New York', country: 'United States', countryCode: 'US' },
+                    { city: 'London', country: 'United Kingdom', countryCode: 'GB' },
+                    { city: 'Tokyo', country: 'Japan', countryCode: 'JP' },
+                    { city: 'Sydney', country: 'Australia', countryCode: 'AU' },
+                    { city: 'Toronto', country: 'Canada', countryCode: 'CA' }
+                ];
+                
+                const sampleUsers = [
+                    { name: 'Alice Johnson', email: 'alice@example.com' },
+                    { name: 'Bob Smith', email: 'bob@example.com' },
+                    { name: 'Carol Brown', email: 'carol@example.com' },
+                    { name: 'David Wilson', email: 'david@example.com' },
+                    { name: 'Eva Davis', email: 'eva@example.com' }
+                ];
+                
+                // Generate sample sessions
+                for (let i = 0; i < 10; i++) {
+                    const startTime = Date.now() - Math.random() * 86400000 * 7; // Last 7 days
+                    const duration = Math.random() * 3600000; // Up to 1 hour
+                    const location = sampleLocations[Math.floor(Math.random() * sampleLocations.length)];
+                    
+                    const session = {
                         id: this.generateId(),
-                        firstVisit: this.currentSession.startTime,
-                        sessions: 1,
-                        totalDuration: this.currentSession.duration,
-                        userAgent: this.currentSession.userAgent,
-                        platform: this.currentSession.platform,
-                        language: this.currentSession.language,
-                        timezone: this.currentSession.timezone,
-                        country: this.getCountryFromTimezone(this.currentSession.timezone),
-                        googleUser: this.currentSession.googleUser
+                        startTime,
+                        endTime: startTime + duration,
+                        duration,
+                        pageViews: Math.floor(Math.random() * 20) + 1,
+                        clicks: Math.floor(Math.random() * 50),
+                        scrollDepth: Math.floor(Math.random() * 100),
+                        userAgent: sampleUserAgents[Math.floor(Math.random() * sampleUserAgents.length)],
+                        platform: Math.random() > 0.5 ? 'Win32' : 'MacIntel',
+                        language: Math.random() > 0.7 ? 'es-ES' : 'en-US',
+                        screenResolution: Math.random() > 0.5 ? '1920x1080' : '1366x768',
+                        timezone: 'America/New_York',
+                        ipInfo: {
+                            ip: `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+                            ...location
+                        },
+                        fingerprint: this.generateId(),
+                        googleUser: Math.random() > 0.6 ? {
+                            ...sampleUsers[Math.floor(Math.random() * sampleUsers.length)],
+                            id: this.generateId()
+                        } : null,
+                        isNewUser: Math.random() > 0.7
+                    };
+                    
+                    this.data.sessions.push(session);
+                }
+                
+                // Generate sample Google users
+                for (let i = 0; i < 5; i++) {
+                    const user = sampleUsers[i];
+                    const firstSignIn = Date.now() - Math.random() * 86400000 * 30; // Last 30 days
+                    
+                    this.data.googleUsers.push({
+                        id: this.generateId(),
+                        name: user.name,
+                        email: user.email,
+                        picture: `https://via.placeholder.com/50x50/4285f4/ffffff?text=${user.name.split(' ').map(n => n[0]).join('')}`,
+                        firstSignIn,
+                        lastActive: Date.now() - Math.random() * 86400000,
+                        totalSessions: Math.floor(Math.random() * 20) + 1,
+                        totalTime: Math.floor(Math.random() * 10000000) + 100000
                     });
                 }
-
+                
                 this.saveData();
+                this.updateDashboard();
+                this.logActivity('Sample data generated', 'system');
             }
 
-            saveCurrentSession() {
-                this.currentSession.duration = Date.now() - this.currentSession.startTime;
-                
-                const existingIndex = this.data.sessions.findIndex(s => s.id === this.currentSession.id);
-                if (existingIndex >= 0) {
-                    this.data.sessions[existingIndex] = {...this.currentSession};
-                } else {
-                    this.data.sessions.push({...this.currentSession});
+            clearData() {
+                if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                    this.data = {
+                        users: [],
+                        sessions: [],
+                        googleUsers: [],
+                        analytics: []
+                    };
+                    this.activityLog = [];
+                    this.saveData();
+                    this.updateDashboard();
+                    this.logActivity('All data cleared', 'system');
                 }
-                
-                this.saveData();
-            }
-
-            getCountryFromTimezone(timezone) {
-                const timezoneToCountry = {
-                    'America/New_York': 'United States',
-                    'America/Los_Angeles': 'United States',
-                    'Europe/London': 'United Kingdom',
-                    'Europe/Paris': 'France',
-                    'Asia/Tokyo': 'Japan',
-                    'Asia/Shanghai': 'China',
-                    'Africa/Johannesburg': 'South Africa',
-                    'Africa/Blantyre': 'Malawi',
-                    'Australia/Sydney': 'Australia'
-                };
-                return timezoneToCountry[timezone] || 'Unknown';
             }
 
             updateDashboard() {
                 this.updateStats();
-                this.updateTable();
+                this.updateTables();
             }
 
             updateStats() {
-                const now = Date.now();
-                const last7Days = now - (7 * 24 * 60 * 60 * 1000);
+                const allSessions = this.data.sessions;
+                const googleUsers = this.data.googleUsers;
                 
-                const recentSessions = this.data.sessions.filter(s => s.startTime > last7Days);
-                const uniqueVisitors = new Set(recentSessions.map(s => s.userAgent)).size;
-                const totalPageViews = recentSessions.reduce((sum, s) => sum + (s.pageViews || 1), 0);
-                const avgSessionDuration = recentSessions.length > 0 ? 
-                    recentSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / recentSessions.length : 0;
-                const totalSearches = recentSessions.reduce((sum, s) => sum + (s.searches || 0), 0);
-                const uniqueCountries = new Set(recentSessions.map(s => s.country || 'Unknown')).size;
+                // Calculate stats
+                const totalSessions = allSessions.length;
+                const totalGoogleUsers = googleUsers.length;
+                const uniqueCountries = new Set(allSessions.map(s => s.ipInfo?.countryCode).filter(Boolean)).size;
+                const deviceTypes = new Set(allSessions.map(s => this.getDeviceType(s.userAgent))).size;
                 
-                // Count signed-in users
-                const signedInSessions = recentSessions.filter(s => s.googleUser !== null);
-                const uniqueSignedInUsers = new Set(signedInSessions.map(s => s.googleUser?.id)).size;
-
+                const avgSessionDuration = totalSessions > 0 
+                    ? allSessions.reduce((sum, s) => sum + (s.duration || 0), 0) / totalSessions
+                    : 0;
+                
                 // Update DOM
-                document.getElementById('totalVisitors').textContent = uniqueVisitors;
-                document.getElementById('pageViews').textContent = totalPageViews;
-                document.getElementById('avgSession').textContent = Math.round(avgSessionDuration / 60000) + 'm';
-                document.getElementById('searchQueries').textContent = totalSearches;
+                document.getElementById('totalUsers').textContent = totalSessions;
+                document.getElementById('googleUsers').textContent = totalGoogleUsers;
+                document.getElementById('totalSessions').textContent = totalSessions;
+                document.getElementById('avgSession').textContent = this.formatDuration(avgSessionDuration);
                 document.getElementById('countries').textContent = uniqueCountries;
-                document.getElementById('signedInUsers').textContent = uniqueSignedInUsers;
+                document.getElementById('deviceTypes').textContent = deviceTypes;
             }
 
-            updateTable() {
-                const tbody = document.getElementById('visitorTableBody');
-                tbody.innerHTML = '';
-                
-                const recentSessions = this.data.sessions
-                    .sort((a, b) => b.startTime - a.startTime)
-                    .slice(0, 20);
+            updateTables() {
+                this.updateUserTable();
+                this.updateGoogleUsersTable();
+                this.updateAnalyticsTable();
+            }
 
-                recentSessions.forEach(session => {
-                    const row = document.createElement('tr');
-                    const duration = session.duration ? Math.round(session.duration / 1000) + 's' : 'Active';
-                    const userStatus = session.googleUser ? 
-                        `🔐 ${session.googleUser.name}` : '👤 Anonymous';
+            updateUserTable() {
+                const tbody = document.getElementById('userTableBody');
+                const sessions = [...this.data.sessions].sort((a, b) => b.startTime - a.startTime).slice(0, 20);
+                
+                tbody.innerHTML = sessions.map(session => {
+                    const status = session.googleUser ? 'Signed In' : 'Anonymous';
+                    const statusClass = session.googleUser ? 'status-signed-in' : 'status-anonymous';
+                    const userInfo = session.googleUser 
+                        ? `${session.googleUser.name} (${session.googleUser.email})`
+                        : 'Anonymous User';
                     
-                    row.innerHTML = `
-                        <td>${new Date(session.startTime).toLocaleString()}</td>
-                        <td>${userStatus}</td>
-                        <td>${session.country || this.getCountryFromTimezone(session.timezone)}</td>
-                        <td>${this.getDeviceType(session.userAgent)}</td>
-                        <td>${this.getBrowserFromUA(session.userAgent)}</td>
-                        <td>${duration}</td>
-                        <td>${session.pageViews || 1}</td>
+                    return `
+                        <tr>
+                            <td>${new Date(session.startTime).toLocaleString()}</td>
+                            <td><span class="status-badge ${statusClass}">${status}</span></td>
+                            <td>${userInfo}</td>
+                            <td>${session.ipInfo ? `${session.ipInfo.city}, ${session.ipInfo.country}` : 'Unknown'}</td>
+                            <td>${this.getDeviceType(session.userAgent)}</td>
+                            <td>${this.getBrowserInfo(session.userAgent)}</td>
+                            <td>${this.formatDuration(session.duration || 0)}</td>
+                            <td>${session.ipInfo?.ip || 'Unknown'}</td>
+                        </tr>
                     `;
-                    tbody.appendChild(row);
-                });
+                }).join('');
+            }
+
+            updateGoogleUsersTable() {
+                const tbody = document.getElementById('googleUsersTableBody');
+                const users = [...this.data.googleUsers].sort((a, b) => b.lastActive - a.lastActive);
+                
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${new Date(user.firstSignIn).toLocaleDateString()}</td>
+                        <td>${new Date(user.lastActive).toLocaleString()}</td>
+                        <td>${user.totalSessions}</td>
+                        <td>${this.formatDuration(user.totalTime)}</td>
+                        <td><span class="status-badge status-signed-in">Active</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            updateAnalyticsTable() {
+                const tbody = document.getElementById('analyticsTableBody');
+                const sessions = [...this.data.sessions].slice(0, 10);
+                
+                tbody.innerHTML = sessions.map(session => `
+                    <tr>
+                        <td>${session.id.substring(0, 8)}...</td>
+                        <td title="${session.userAgent}">${session.userAgent.substring(0, 50)}...</td>
+                        <td>${session.screenResolution}</td>
+                        <td>${session.language}</td>
+                        <td>${session.timezone}</td>
+                        <td>${session.referrer || 'Direct'}</td>
+                        <td>${session.pageViews}</td>
+                        <td>${session.clicks} clicks, ${session.scrollDepth}% scroll</td>
+                    </tr>
+                `).join('');
             }
 
             getDeviceType(userAgent) {
-                if (userAgent.includes('Mobile') || userAgent.includes('iPhone')) return 'Mobile';
-                if (userAgent.includes('iPad')) return 'Tablet';
-                return 'Desktop';
+                if (/Mobile|Android|iPhone|iPad/.test(userAgent)) {
+                    return 'Mobile';
+                } else if (/Tablet|iPad/.test(userAgent)) {
+                    return 'Tablet';
+                } else {
+                    return 'Desktop';
+                }
             }
 
-            getBrowserFromUA(userAgent) {
+            getBrowserInfo(userAgent) {
                 if (userAgent.includes('Chrome')) return 'Chrome';
                 if (userAgent.includes('Firefox')) return 'Firefox';
                 if (userAgent.includes('Safari')) return 'Safari';
@@ -744,172 +1142,61 @@
                 return 'Other';
             }
 
-            generateSampleData() {
-                // Add sample data including some with Google users
-                const sampleSessions = [];
-                const sampleGoogleUsers = [
-                    { id: 'user1', name: 'John Doe', email: 'john@example.com' },
-                    { id: 'user2', name: 'Jane Smith', email: 'jane@example.com' },
-                    { id: 'user3', name: 'Bob Johnson', email: 'bob@example.com' }
-                ];
+            formatDuration(ms) {
+                const seconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const hours = Math.floor(minutes / 60);
                 
-                // Add sample Google users to data
-                this.data.googleUsers = [...this.data.googleUsers, ...sampleGoogleUsers.map(user => ({
-                    ...user,
-                    firstSignIn: Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
-                    lastSignIn: Date.now() - Math.random() * 24 * 60 * 60 * 1000,
-                    sessionCount: Math.floor(Math.random() * 10) + 1
-                }))];
-
-                const countries = ['United States', 'United Kingdom', 'Canada', 'Germany', 'France', 'Japan', 'Australia', 'Malawi'];
-
-                for (let i = 0; i < 50; i++) {
-                    const timestamp = Date.now() - (Math.random() * 7 * 24 * 60 * 60 * 1000);
-                    const duration = Math.random() * 600000 + 30000;
-                    const hasGoogleUser = Math.random() > 0.6; // 40% chance of Google user
-                    
-                    sampleSessions.push({
-                        id: this.generateId(),
-                        startTime: timestamp,
-                        endTime: timestamp + duration,
-                        duration: duration,
-                        pageViews: Math.floor(Math.random() * 10) + 1,
-                        searches: Math.floor(Math.random() * 5),
-                        userAgent: this.getRandomUserAgent(),
-                        platform: this.getRandomPlatform(),
-                        language: 'en-US',
-                        screenResolution: '1920x1080',
-                        windowSize: '1366x768',
-                        timezone: this.getRandomTimezone(),
-                        referrer: Math.random() > 0.5 ? 'https://google.com' : '',
-                        isNewVisitor: Math.random() > 0.7,
-                        country: countries[Math.floor(Math.random() * countries.length)],
-                        googleUser: hasGoogleUser ? sampleGoogleUsers[Math.floor(Math.random() * sampleGoogleUsers.length)] : null
-                    });
+                if (hours > 0) {
+                    return `${hours}h ${minutes % 60}m`;
+                } else if (minutes > 0) {
+                    return `${minutes}m`;
+                } else {
+                    return `${seconds}s`;
                 }
-
-                this.data.sessions = [...this.data.sessions, ...sampleSessions];
-                this.saveData();
-                this.updateDashboard();
-                alert('Sample data generated successfully!');
-            }
-
-            getRandomUserAgent() {
-                const userAgents = [
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1',
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
-                    'Mozilla/5.0 (iPad; CPU OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/604.1'
-                ];
-                return userAgents[Math.floor(Math.random() * userAgents.length)];
-            }
-
-            getRandomPlatform() {
-                const platforms = ['Win32', 'MacIntel', 'iPhone', 'iPad', 'Linux x86_64'];
-                return platforms[Math.floor(Math.random() * platforms.length)];
-            }
-
-            getRandomTimezone() {
-                const timezones = [
-                    'America/New_York', 'America/Los_Angeles', 'Europe/London', 
-                    'Europe/Paris', 'Asia/Tokyo', 'Asia/Shanghai', 
-                    'Africa/Johannesburg', 'Africa/Blantyre', 'Australia/Sydney'
-                ];
-                return timezones[Math.floor(Math.random() * timezones.length)];
-            }
-
-            clearAllData() {
-                this.data = {
-                    visitors: [],
-                    sessions: [],
-                    searches: [],
-                    pageViews: [],
-                    googleUsers: []
-                };
-                this.saveData();
-                this.updateDashboard();
-                alert('All data cleared successfully!');
-            }
-
-            exportData() {
-                const dataStr = JSON.stringify(this.data, null, 2);
-                const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(dataBlob);
-                link.download = `analytics-data-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-            }
-
-            refreshData() {
-                this.updateDashboard();
-                alert('Dashboard refreshed!');
             }
         }
 
-        // Initialize the data collector
-        const collector = new EnhancedUserDataCollector();
-
         // Global functions for buttons
-        function signIn() {
-            if (typeof google !== 'undefined') {
-                google.accounts.id.prompt();
-            } else {
-                // Fallback for demo purposes
-                alert('Google Sign-In not available in this demo. In production, users would sign in with their Google account.');
-                
-                // Simulate sign-in for demo
-                collector.currentUser = {
-                    id: 'demo-user',
-                    name: 'Demo User',
-                    email: 'demo@example.com',
-                    picture: 'https://via.placeholder.com/50x50/4285f4/ffffff?text=DU'
-                };
-                
-                collector.updateAuthUI(true);
-                collector.updateDashboard();
-            }
+        let dataCollector;
+
+        function simulateGoogleSignIn() {
+            dataCollector.simulateGoogleSignIn();
         }
 
         function signOut() {
-            if (typeof google !== 'undefined') {
-                google.accounts.id.disableAutoSelect();
-            }
-            
-            collector.currentUser = null;
-            collector.currentSession.googleUser = null;
-            collector.updateAuthUI(false);
-            collector.updateDashboard();
-            alert('Signed out successfully!');
+            dataCollector.signOut();
         }
 
         function refreshData() {
-            collector.refreshData();
+            dataCollector.refreshData();
         }
 
         function exportData() {
-            collector.exportData();
-        }
-
-        function clearData() {
-            if (confirm('Are you sure you want to clear all analytics data? This action cannot be undone.')) {
-                collector.clearAllData();
-            }
+            dataCollector.exportData();
         }
 
         function generateSampleData() {
-            collector.generateSampleData();
+            dataCollector.generateSampleData();
         }
 
-        // Update dashboard every 30 seconds
-        setInterval(() => {
-            collector.updateDashboard();
-        }, 30000);
+        function clearData() {
+            dataCollector.clearData();
+        }
 
-        // Initial dashboard update
-        document.addEventListener('DOMContentLoaded', () => {
-            collector.updateDashboard();
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            dataCollector = new AdvancedUserDataCollector();
+            
+            // Set initial timestamp
+            document.getElementById('initTime').textContent = new Date().toLocaleTimeString();
+            
+            // Show some sample data initially
+            setTimeout(() => {
+                if (dataCollector.data.sessions.length === 0) {
+                    dataCollector.generateSampleData();
+                }
+            }, 2000);
         });
     </script>
 </body>
