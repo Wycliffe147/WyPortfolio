@@ -685,3 +685,70 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check authentication and show popup if needed
     checkAuthOnLoad();
 });
+
+
+// Add this code to your existing index.js file
+
+// Function to collect user data after successful Google sign-in
+function collectUserData(userInfo) {
+    try {
+        // Load existing data
+        const existingData = localStorage.getItem('portfolioUserData');
+        const data = existingData ? JSON.parse(existingData) : { users: [], visits: [] };
+        
+        // Add or update user
+        const existingUserIndex = data.users.findIndex(u => u.email === userInfo.email);
+        if (existingUserIndex === -1) {
+            data.users.push({
+                name: userInfo.name,
+                email: userInfo.email,
+                firstSeen: new Date().toISOString()
+            });
+        } else {
+            // Update existing user info
+            data.users[existingUserIndex] = {
+                ...data.users[existingUserIndex],
+                name: userInfo.name,
+                lastSeen: new Date().toISOString()
+            };
+        }
+        
+        // Add visit record
+        data.visits.push({
+            email: userInfo.email,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+            page: window.location.pathname
+        });
+        
+        // Save data
+        localStorage.setItem('portfolioUserData', JSON.stringify(data));
+        
+        console.log('User data collected:', userInfo.name, userInfo.email);
+    } catch (error) {
+        console.error('Error collecting user data:', error);
+    }
+}
+
+// Example of how to call this function when user signs in
+// You would call this in your Google Sign-In success callback
+function handleSignInSuccess(user) {
+    // Extract user info from Google response
+    const userInfo = {
+        name: user.name || user.displayName,
+        email: user.email,
+        picture: user.picture || user.photoURL
+    };
+    
+    // Store session data (your existing code)
+    window.tempUserSession = {
+        ...userInfo,
+        signInTime: Date.now()
+    };
+    
+    // Collect user data for dashboard
+    collectUserData(userInfo);
+    
+    console.log('User signed in successfully:', userInfo.name);
+}

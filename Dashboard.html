@@ -3,99 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>User Dashboard - Wy's Portfolio</title>
 </head>
 <body>
     <h1>User Dashboard</h1>
+    <p>Collecting user data from visitors who sign in through Google authentication.</p>
     
-    <div id="signInDiv"></div>
+    <div id="stats">
+        <h2>Statistics</h2>
+        <p>Total Users: <span id="totalUsers">0</span></p>
+        <p>Users Today: <span id="todayUsers">0</span></p>
+        <p>Last Updated: <span id="lastUpdate">Never</span></p>
+    </div>
     
-    <div id="userInfo" style="display:none;">
-        <h2>Signed In User:</h2>
-        <p><strong>Name:</strong> <span id="userName"></span></p>
-        <p><strong>Email:</strong> <span id="userEmail"></span></p>
-        <p><strong>Picture:</strong></p>
-        <img id="userPicture" width="100" height="100" alt="User Picture">
-        <p><strong>Sign-in Time:</strong> <span id="signInTime"></span></p>
-        <button onclick="signOut()">Sign Out</button>
+    <div id="userList">
+        <h2>Signed In Users</h2>
+        <div id="users">
+            <p>No users found.</p>
+        </div>
     </div>
-
-    <div id="userLog">
-        <h2>User Activity Log:</h2>
-        <ul id="logList"></ul>
-    </div>
-
+    
+    <button onclick="refreshData()">Refresh Data</button>
+    <button onclick="clearData()">Clear All Data</button>
+    
     <script>
-        let users = [];
+        // Simple data collection system using localStorage
         
-        function handleCredentialResponse(response) {
-            const responsePayload = decodeJwtResponse(response.credential);
-            
-            const user = {
-                name: responsePayload.name,
-                email: responsePayload.email,
-                picture: responsePayload.picture,
-                signInTime: new Date().toLocaleString()
-            };
-            
-            // Store user data
-            users.push(user);
-            
-            // Display current user
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userEmail').textContent = user.email;
-            document.getElementById('userPicture').src = user.picture;
-            document.getElementById('signInTime').textContent = user.signInTime;
-            
-            // Show user info, hide sign in
-            document.getElementById('userInfo').style.display = 'block';
-            document.getElementById('signInDiv').style.display = 'none';
-            
-            // Update log
-            updateUserLog();
+        function loadUserData() {
+            try {
+                const data = localStorage.getItem('portfolioUserData');
+                return data ? JSON.parse(data) : { users: [], visits: [] };
+            } catch (e) {
+                console.error('Error loading data:', e);
+                return { users: [], visits: [] };
+            }
         }
         
-        function decodeJwtResponse(token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            
-            return JSON.parse(jsonPayload);
+        function saveUserData(data) {
+            try {
+                localStorage.setItem('portfolioUserData', JSON.stringify(data));
+            } catch (e) {
+                console.error('Error saving data:', e);
+            }
         }
         
-        function updateUserLog() {
-            const logList = document.getElementById('logList');
-            logList.innerHTML = '';
+        function displayUserData() {
+            const data = loadUserData();
+            const userContainer = document.getElementById('users');
+            const totalUsersSpan = document.getElementById('totalUsers');
+            const todayUsersSpan = document.getElementById('todayUsers');
+            const lastUpdateSpan = document.getElementById('lastUpdate');
             
-            users.forEach((user, index) => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `
-                    <strong>${user.name}</strong> (${user.email}) - Signed in at ${user.signInTime}
-                `;
-                logList.appendChild(listItem);
+            // Update statistics
+            totalUsersSpan.textContent = data.users.length;
+            
+            // Count today's users
+            const today = new Date().toDateString();
+            const todayCount = data.visits.filter(visit => 
+                new Date(visit.timestamp).toDateString() === today
+            ).length;
+            todayUsersSpan.textContent = todayCount;
+            
+            lastUpdateSpan.textContent = new Date().toLocaleString();
+            
+            // Display user list
+            if (data.users.length === 0) {
+                userContainer.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+            
+            let html = '<table border="1" style="width:100%; border-collapse: collapse;">';
+            html += '<tr><th>Name</th><th>Email</th><th>First Visit</th><th>Last Visit</th><th>Total Visits</th></tr>';
+            
+            data.users.forEach(user => {
+                const userVisits = data.visits.filter(v => v.email === user.email);
+                const firstVisit = userVisits.length > 0 ? 
+                    new Date(Math.min(...userVisits.map(v => new Date(v.timestamp)))).toLocaleDateString() : 'Unknown';
+                const lastVisit = userVisits.length > 0 ? 
+                    new Date(Math.max(...userVisits.map(v => new Date(v.timestamp)))).toLocaleDateString() : 'Unknown';
+                
+                html += `<tr>
+                    <td>${user.name || 'Unknown'}</td>
+                    <td>${user.email || 'Unknown'}</td>
+                    <td>${firstVisit}</td>
+                    <td>${lastVisit}</td>
+                    <td>${userVisits.length}</td>
+                </tr>`;
             });
+            
+            html += '</table>';
+            userContainer.innerHTML = html;
         }
         
-        function signOut() {
-            google.accounts.id.disableAutoSelect();
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('signInDiv').style.display = 'block';
+        function refreshData() {
+            displayUserData();
         }
         
-        window.onload = function () {
-            google.accounts.id.initialize({
-                client_id: "650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com",
-                callback: handleCredentialResponse
+        function clearData() {
+            if (confirm('Are you sure you want to clear all user data?')) {
+                localStorage.removeItem('portfolioUserData');
+                displayUserData();
+            }
+        }
+        
+        // Data collection functions (to be used by your main website)
+        window.addUserData = function(userInfo) {
+            const data = loadUserData();
+            
+            // Add or update user
+            const existingUserIndex = data.users.findIndex(u => u.email === userInfo.email);
+            if (existingUserIndex === -1) {
+                data.users.push({
+                    name: userInfo.name,
+                    email: userInfo.email,
+                    firstSeen: new Date().toISOString()
+                });
+            } else {
+                // Update existing user info
+                data.users[existingUserIndex] = {
+                    ...data.users[existingUserIndex],
+                    name: userInfo.name,
+                    lastSeen: new Date().toISOString()
+                };
+            }
+            
+            // Add visit record
+            data.visits.push({
+                email: userInfo.email,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                referrer: document.referrer
             });
             
-            google.accounts.id.renderButton(
-                document.getElementById("signInDiv"),
-                { theme: "outline", size: "large" }
-            );
-        }
+            saveUserData(data);
+        };
+        
+        // Initialize dashboard
+        displayUserData();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(displayUserData, 30000);
+        
+        // Listen for storage changes (if multiple tabs open)
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'portfolioUserData') {
+                displayUserData();
+            }
+        });
     </script>
 </body>
 </html>
