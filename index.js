@@ -752,3 +752,75 @@ function handleSignInSuccess(user) {
     
     console.log('User signed in successfully:', userInfo.name);
 }
+
+// Add this function to your login.html script section
+function collectUserData(userInfo) {
+    try {
+        // Load existing data
+        const existingData = localStorage.getItem('portfolioUserData');
+        const data = existingData ? JSON.parse(existingData) : { users: [], visits: [] };
+        
+        // Add or update user
+        const existingUserIndex = data.users.findIndex(u => u.email === userInfo.email);
+        if (existingUserIndex === -1) {
+            data.users.push({
+                name: userInfo.name,
+                email: userInfo.email,
+                firstSeen: new Date().toISOString()
+            });
+        } else {
+            // Update existing user info
+            data.users[existingUserIndex] = {
+                ...data.users[existingUserIndex],
+                name: userInfo.name,
+                lastSeen: new Date().toISOString()
+            };
+        }
+        
+        // Add visit record
+        data.visits.push({
+            email: userInfo.email,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            referrer: document.referrer,
+            page: window.location.pathname
+        });
+        
+        // Save data
+        localStorage.setItem('portfolioUserData', JSON.stringify(data));
+        
+        console.log('User data collected:', userInfo.name, userInfo.email);
+    } catch (error) {
+        console.error('Error collecting user data:', error);
+    }
+}
+
+// Update your existing handleSignInResponse function to include this line:
+function handleSignInResponse(response) {
+    hideError();
+    
+    try {
+        if (!response.credential) {
+            throw new Error('No credential received');
+        }
+        
+        const userInfo = parseJwt(response.credential);
+        
+        currentUser = {
+            name: userInfo.name,
+            email: userInfo.email,
+            picture: userInfo.picture,
+            token: response.credential,
+            signInTime: Date.now()
+        };
+        
+        // Add this line to collect user data
+        collectUserData(currentUser);
+        
+        setCookie('userSession', currentUser, 7);
+        showSuccessAndRedirect();
+        
+    } catch (error) {
+        showError('Authentication failed. Please try again.');
+    }
+}

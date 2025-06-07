@@ -3,153 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - Wy's Portfolio</title>
+    <title>User Dashboard</title>
 </head>
 <body>
     <h1>User Dashboard</h1>
-    <p>Collecting user data from visitors who sign in through Google authentication.</p>
     
     <div id="stats">
         <h2>Statistics</h2>
         <p>Total Users: <span id="totalUsers">0</span></p>
-        <p>Users Today: <span id="todayUsers">0</span></p>
-        <p>Last Updated: <span id="lastUpdate">Never</span></p>
+        <p>Total Visits: <span id="totalVisits">0</span></p>
+        <p>Last Updated: <span id="lastUpdated">Never</span></p>
     </div>
-    
-    <div id="userList">
+
+    <div id="users">
         <h2>Signed In Users</h2>
-        <div id="users">
-            <p>No users found.</p>
-        </div>
+        <div id="usersList">No users found</div>
     </div>
-    
+
+    <div id="visits">
+        <h2>Recent Visits</h2>
+        <div id="visitsList">No visits found</div>
+    </div>
+
     <button onclick="refreshData()">Refresh Data</button>
+    <button onclick="exportData()">Export Data</button>
     <button onclick="clearData()">Clear All Data</button>
-    
+
     <script>
-        // Simple data collection system using localStorage
-        
         function loadUserData() {
             try {
                 const data = localStorage.getItem('portfolioUserData');
-                return data ? JSON.parse(data) : { users: [], visits: [] };
-            } catch (e) {
-                console.error('Error loading data:', e);
+                if (data) {
+                    return JSON.parse(data);
+                }
+                return { users: [], visits: [] };
+            } catch (error) {
+                console.error('Error loading user data:', error);
                 return { users: [], visits: [] };
             }
         }
-        
-        function saveUserData(data) {
-            try {
-                localStorage.setItem('portfolioUserData', JSON.stringify(data));
-            } catch (e) {
-                console.error('Error saving data:', e);
-            }
+
+        function displayStats(data) {
+            document.getElementById('totalUsers').textContent = data.users.length;
+            document.getElementById('totalVisits').textContent = data.visits.length;
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
         }
-        
-        function displayUserData() {
-            const data = loadUserData();
-            const userContainer = document.getElementById('users');
-            const totalUsersSpan = document.getElementById('totalUsers');
-            const todayUsersSpan = document.getElementById('todayUsers');
-            const lastUpdateSpan = document.getElementById('lastUpdate');
+
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
             
-            // Update statistics
-            totalUsersSpan.textContent = data.users.length;
-            
-            // Count today's users
-            const today = new Date().toDateString();
-            const todayCount = data.visits.filter(visit => 
-                new Date(visit.timestamp).toDateString() === today
-            ).length;
-            todayUsersSpan.textContent = todayCount;
-            
-            lastUpdateSpan.textContent = new Date().toLocaleString();
-            
-            // Display user list
-            if (data.users.length === 0) {
-                userContainer.innerHTML = '<p>No users found.</p>';
+            if (users.length === 0) {
+                usersList.innerHTML = '<p>No users found</p>';
                 return;
             }
+
+            let html = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th>Name</th><th>Email</th><th>First Seen</th><th>Last Seen</th></tr>';
             
-            let html = '<table border="1" style="width:100%; border-collapse: collapse;">';
-            html += '<tr><th>Name</th><th>Email</th><th>First Visit</th><th>Last Visit</th><th>Total Visits</th></tr>';
-            
-            data.users.forEach(user => {
-                const userVisits = data.visits.filter(v => v.email === user.email);
-                const firstVisit = userVisits.length > 0 ? 
-                    new Date(Math.min(...userVisits.map(v => new Date(v.timestamp)))).toLocaleDateString() : 'Unknown';
-                const lastVisit = userVisits.length > 0 ? 
-                    new Date(Math.max(...userVisits.map(v => new Date(v.timestamp)))).toLocaleDateString() : 'Unknown';
-                
+            users.forEach(user => {
                 html += `<tr>
-                    <td>${user.name || 'Unknown'}</td>
-                    <td>${user.email || 'Unknown'}</td>
-                    <td>${firstVisit}</td>
-                    <td>${lastVisit}</td>
-                    <td>${userVisits.length}</td>
+                    <td>${user.name || 'N/A'}</td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>${user.firstSeen ? new Date(user.firstSeen).toLocaleString() : 'N/A'}</td>
+                    <td>${user.lastSeen ? new Date(user.lastSeen).toLocaleString() : 'Same as first seen'}</td>
                 </tr>`;
             });
             
             html += '</table>';
-            userContainer.innerHTML = html;
+            usersList.innerHTML = html;
         }
-        
-        function refreshData() {
-            displayUserData();
-        }
-        
-        function clearData() {
-            if (confirm('Are you sure you want to clear all user data?')) {
-                localStorage.removeItem('portfolioUserData');
-                displayUserData();
-            }
-        }
-        
-        // Data collection functions (to be used by your main website)
-        window.addUserData = function(userInfo) {
-            const data = loadUserData();
+
+        function displayVisits(visits) {
+            const visitsList = document.getElementById('visitsList');
             
-            // Add or update user
-            const existingUserIndex = data.users.findIndex(u => u.email === userInfo.email);
-            if (existingUserIndex === -1) {
-                data.users.push({
-                    name: userInfo.name,
-                    email: userInfo.email,
-                    firstSeen: new Date().toISOString()
-                });
-            } else {
-                // Update existing user info
-                data.users[existingUserIndex] = {
-                    ...data.users[existingUserIndex],
-                    name: userInfo.name,
-                    lastSeen: new Date().toISOString()
-                };
+            if (visits.length === 0) {
+                visitsList.innerHTML = '<p>No visits found</p>';
+                return;
             }
+
+            let html = '<table border="1" style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th>Email</th><th>Time</th><th>Page</th><th>Referrer</th></tr>';
             
-            // Add visit record
-            data.visits.push({
-                email: userInfo.email,
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                referrer: document.referrer
+            // Show most recent visits first
+            const recentVisits = visits.slice(-20).reverse();
+            
+            recentVisits.forEach(visit => {
+                html += `<tr>
+                    <td>${visit.email || 'N/A'}</td>
+                    <td>${visit.timestamp ? new Date(visit.timestamp).toLocaleString() : 'N/A'}</td>
+                    <td>${visit.page || 'N/A'}</td>
+                    <td>${visit.referrer || 'Direct'}</td>
+                </tr>`;
             });
             
-            saveUserData(data);
-        };
-        
-        // Initialize dashboard
-        displayUserData();
-        
-        // Auto-refresh every 30 seconds
-        setInterval(displayUserData, 30000);
-        
-        // Listen for storage changes (if multiple tabs open)
-        window.addEventListener('storage', function(e) {
-            if (e.key === 'portfolioUserData') {
-                displayUserData();
+            html += '</table>';
+            visitsList.innerHTML = html;
+        }
+
+        function refreshData() {
+            const data = loadUserData();
+            displayStats(data);
+            displayUsers(data.users);
+            displayVisits(data.visits);
+        }
+
+        function exportData() {
+            const data = loadUserData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'user-data-' + new Date().toISOString().split('T')[0] + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearData() {
+            if (confirm('Are you sure you want to clear all user data? This cannot be undone.')) {
+                localStorage.removeItem('portfolioUserData');
+                refreshData();
+                alert('All data has been cleared.');
             }
-        });
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(refreshData, 30000);
+
+        // Initial load
+        refreshData();
     </script>
 </body>
 </html>
