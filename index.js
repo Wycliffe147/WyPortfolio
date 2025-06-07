@@ -201,3 +201,107 @@ searchInput.addEventListener('keydown', (e) => {
         searchResults.style.display = 'none';
     }
 });
+
+// auth-handler.js - Handle authentication checks for contact link
+
+// Cookie management functions
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+            try {
+                return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+            } catch (e) {
+                console.error('Error parsing cookie:', e);
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
+// Check if session is still valid (within 7 days)
+function isSessionValid(sessionData) {
+    if (!sessionData || !sessionData.signInTime) {
+        return false;
+    }
+    
+    const sessionAge = Date.now() - sessionData.signInTime;
+    const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+    
+    return sessionAge < maxAge;
+}
+
+// Check authentication status
+function checkAuthStatus() {
+    try {
+        // Check memory first (for same session)
+        if (window.tempUserSession && isSessionValid(window.tempUserSession)) {
+            return true;
+        }
+        
+        // Check cookie (for persistence across sessions)
+        const cookieSession = getCookie('userSession');
+        if (cookieSession && isSessionValid(cookieSession)) {
+            window.tempUserSession = cookieSession; // Sync to memory
+            return true;
+        }
+        
+        return false;
+    } catch (error) {
+        console.error('Error checking auth status:', error);
+        return false;
+    }
+}
+
+// Handle contact link clicks
+function handleContactClick(event) {
+    event.preventDefault(); // Prevent default navigation
+    
+    console.log('Contact link clicked, checking authentication...');
+    
+    if (checkAuthStatus()) {
+        console.log('User is authenticated, redirecting to contact page...');
+        window.location.href = 'contact.html';
+    } else {
+        console.log('User is not authenticated, redirecting to login page...');
+        window.location.href = 'login.html';
+    }
+}
+
+// Initialize contact link handling
+function initializeContactLinkHandler() {
+    // Find all contact links (both in navigation and call-to-action)
+    const contactLinks = document.querySelectorAll('a[href="contact.html"]');
+    
+    contactLinks.forEach(link => {
+        link.addEventListener('click', handleContactClick);
+        console.log('Contact link handler attached');
+    });
+    
+    // Also handle any dynamically created contact links
+    document.addEventListener('click', function(event) {
+        if (event.target.matches('a[href="contact.html"]') || 
+            event.target.closest('a[href="contact.html"]')) {
+            handleContactClick(event);
+        }
+    });
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Initializing contact link authentication handler...');
+    initializeContactLinkHandler();
+});
+
+// Export functions for external use if needed
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        checkAuthStatus,
+        handleContactClick,
+        initializeContactLinkHandler
+    };
+}
