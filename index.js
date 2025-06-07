@@ -1,0 +1,203 @@
+// Add smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+
+// Scroll navigation functionality
+function setupScrollNavigation(containerId, prevBtnId, nextBtnId) {
+    const container = document.getElementById(containerId);
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
+    
+    if (!container || !prevBtn || !nextBtn) return;
+    
+    const cardWidth = 350; // Width of project cards + gap
+    const tutorialCardWidth = 300; // Width of tutorial cards + gap
+    const scrollAmount = containerId.includes('projects') ? cardWidth + 30 : tutorialCardWidth + 30;
+    
+    prevBtn.addEventListener('click', () => {
+        container.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        container.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Update button visibility based on scroll position
+    function updateButtonVisibility() {
+        const scrollLeft = container.scrollLeft;
+        const maxScroll = container.scrollWidth - container.clientWidth;
+        
+        prevBtn.style.opacity = scrollLeft > 0 ? '1' : '0.5';
+        nextBtn.style.opacity = scrollLeft < maxScroll - 1 ? '1' : '0.5';
+        
+        prevBtn.disabled = scrollLeft <= 0;
+        nextBtn.disabled = scrollLeft >= maxScroll - 1;
+    }
+    
+    container.addEventListener('scroll', updateButtonVisibility);
+    window.addEventListener('resize', updateButtonVisibility);
+    updateButtonVisibility(); // Initial check
+}
+
+// Initialize scroll navigation for both sections
+setupScrollNavigation('projectsContainer', 'projectsPrev', 'projectsNext');
+setupScrollNavigation('tutorialsContainer', 'tutorialsPrev', 'tutorialsNext');
+
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const projectsContainer = document.getElementById('projectsContainer');
+const tutorialsContainer = document.getElementById('tutorialsContainer');
+
+// All project and tutorial cards
+const allCards = [
+    ...document.querySelectorAll('.project-card'),
+    ...document.querySelectorAll('.tutorial-card')
+];
+
+// Highlight text function
+function highlightText(text, searchTerm) {
+    if (!searchTerm) return text;
+    
+    const regex = new RegExp(searchTerm, 'gi');
+    return text.replace(regex, match => `<span class="highlight">${match}</span>`);
+}
+
+// Search function
+function performSearch(searchTerm) {
+    if (!searchTerm) {
+        searchResults.style.display = 'none';
+        return;
+    }
+    
+    const results = [];
+    
+    allCards.forEach(card => {
+        const searchData = card.getAttribute('data-search').toLowerCase();
+        const title = card.querySelector('h3').textContent.toLowerCase();
+        const description = card.querySelector('p').textContent.toLowerCase();
+        
+        if (searchData.includes(searchTerm) || 
+            title.includes(searchTerm) || 
+            description.includes(searchTerm)) {
+            
+            const type = card.classList.contains('project-card') ? 'Project' : 'Tutorial';
+            const highlightedTitle = highlightText(card.querySelector('h3').textContent, searchTerm);
+            const highlightedDesc = highlightText(card.querySelector('p').textContent, searchTerm);
+            
+            results.push({
+                element: card,
+                type,
+                title: highlightedTitle,
+                description: highlightedDesc
+            });
+        }
+    });
+    
+    displayResults(results, searchTerm);
+}
+
+// Display search results
+function displayResults(results, searchTerm) {
+    searchResults.innerHTML = '';
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">No results found for "' + searchTerm + '"</div>';
+    } else {
+        results.forEach(result => {
+            const resultElement = document.createElement('div');
+            resultElement.className = 'search-result-item';
+            resultElement.innerHTML = `
+                <h4><span class="result-type">${result.type}</span>${result.title}</h4>
+                <p>${result.description}</p>
+            `;
+            
+            resultElement.addEventListener('click', () => {
+                // First ensure all cards are visible
+                allCards.forEach(card => card.style.display = '');
+                
+                // Scroll to the specific card
+                result.element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Apply more noticeable highlight animation
+                result.element.style.boxShadow = '0 0 0 4px rgba(52, 152, 219, 0.7)';
+                result.element.style.transform = 'scale(1.03)';
+                result.element.style.transition = 'all 0.3s ease';
+                
+                // Reset the highlight after animation
+                setTimeout(() => {
+                    result.element.style.boxShadow = '';
+                    result.element.style.transform = '';
+                }, 2500);
+                
+                // Close search results
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+            });
+            
+            searchResults.appendChild(resultElement);
+        });
+    }
+    
+    searchResults.style.display = 'block';
+}
+
+// Event listeners
+searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    performSearch(searchTerm);
+});
+
+// Close search results when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-container')) {
+        searchResults.style.display = 'none';
+    }
+});
+
+// Filter projects and tutorials when pressing Enter
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const searchTerm = searchInput.value.trim().toLowerCase();
+        
+        if (!searchTerm) {
+            // Show all if search is empty
+            allCards.forEach(card => card.style.display = '');
+            return;
+        }
+        
+        allCards.forEach(card => {
+            const searchData = card.getAttribute('data-search').toLowerCase();
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const description = card.querySelector('p').textContent.toLowerCase();
+            
+            if (searchData.includes(searchTerm) || 
+                title.includes(searchTerm) || 
+                description.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Scroll to projects section if there are results
+        if (document.querySelector('.project-card[style=""]') || 
+            document.querySelector('.tutorial-card[style=""]')) {
+            document.getElementById('projects').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        searchResults.style.display = 'none';
+    }
+});
