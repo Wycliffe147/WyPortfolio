@@ -310,6 +310,15 @@
             margin-right: 8px;
         }
 
+        .error-message {
+            background: #fee;
+            border: 1px solid #e74c3c;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c0392b;
+        }
+
         /* Loading States */
         .submit-btn.loading {
             position: relative;
@@ -478,6 +487,7 @@
                     <p class="auth-description">
                         Your information is kept private and secure. We only use your Google account to verify your identity and prevent automated spam messages.
                     </p>
+                    <div id="errorMessage" class="error-message hidden"></div>
                     <button id="googleSignInBtn" class="google-signin-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -535,25 +545,63 @@
     <script>
         // Google Sign-In Configuration
         let currentUser = null;
+        let isGoogleApiLoaded = false;
+        
+        // Function to show error messages
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            console.error('Google Sign-In Error:', message);
+        }
+        
+        // Function to hide error messages
+        function hideError() {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.classList.add('hidden');
+        }
         
         // Initialize Google Sign-In when API loads
-        window.onload = function() {
-            google.accounts.id.initialize({
-                client_id: '650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com', // Replace with your actual Google Client ID
-                callback: handleSignInResponse,
-                auto_select: false,
-                cancel_on_tap_outside: false
-            });
+        function initializeGoogleSignIn() {
+            console.log('Initializing Google Sign-In...');
             
-            // Check if user is already signed in
-            checkExistingAuth();
-        };
+            try {
+                if (typeof google === 'undefined' || !google.accounts) {
+                    throw new Error('Google Sign-In API not loaded');
+                }
+                
+                google.accounts.id.initialize({
+                    client_id: '650247727271-mcufppu5e4u1ksdt8758lstfvnj9ki3i.apps.googleusercontent.com',
+                    callback: handleSignInResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false,
+                    use_fedcm_for_prompt: false
+                });
+                
+                isGoogleApiLoaded = true;
+                console.log('Google Sign-In initialized successfully');
+                hideError();
+                
+            } catch (error) {
+                console.error('Failed to initialize Google Sign-In:', error);
+                showError('Failed to load Google Sign-In. Please refresh the page and try again.');
+            }
+        }
         
         // Handle Google Sign-In response
         function handleSignInResponse(response) {
+            console.log('Sign-in response received');
+            hideError();
+            
             try {
+                if (!response.credential) {
+                    throw new Error('No credential received from Google');
+                }
+                
                 // Decode the JWT token to get user info
                 const userInfo = parseJwt(response.credential);
+                console.log('User info decoded:', userInfo);
+                
                 currentUser = {
                     name: userInfo.name,
                     email: userInfo.email,
@@ -567,35 +615,50 @@
                 // Show authenticated state
                 showAuthenticatedView();
                 
+                console.log('User authenticated successfully');
+                
             } catch (error) {
                 console.error('Error handling sign-in:', error);
-                alert('Authentication failed. Please try again.');
+                showError('Authentication failed. Please try again.');
             }
         }
         
         // Parse JWT token
         function parseJwt(token) {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-            }).join(''));
-            return JSON.parse(jsonPayload);
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (error) {
+                console.error('Error parsing JWT:', error);
+                throw new Error('Invalid token format');
+            }
         }
         
-        // Store user session
+        // Store user session (using sessionStorage for demo - in production use secure storage)
         function storeUserSession(user) {
-            // In a real implementation, store this securely
-            // For demo purposes, using sessionStorage
-            sessionStorage.setItem('userAuth', JSON.stringify(user));
+            try {
+                sessionStorage.setItem('userAuth', JSON.stringify(user));
+            } catch (error) {
+                console.error('Error storing session:', error);
+            }
         }
         
         // Check for existing authentication
         function checkExistingAuth() {
-            const stored = sessionStorage.getItem('userAuth');
-            if (stored) {
-                currentUser = JSON.parse(stored);
-                showAuthenticatedView();
+            try {
+                const stored = sessionStorage.getItem('userAuth');
+                if (stored) {
+                    currentUser = JSON.parse(stored);
+                    showAuthenticatedView();
+                    console.log('Existing authentication found');
+                }
+            } catch (error) {
+                console.error('Error checking existing auth:', error);
+                sessionStorage.removeItem('userAuth');
             }
         }
         
@@ -605,23 +668,65 @@
             document.getElementById('contactFormSection').classList.remove('hidden');
             
             // Populate user info
-            document.getElementById('userAvatar').src = currentUser.picture;
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('userEmail').textContent = currentUser.email;
+            document.getElementById('userAvatar').src = currentUser.picture || '';
+            document.getElementById('userName').textContent = currentUser.name || '';
+            document.getElementById('userEmail').textContent = currentUser.email || '';
             
             // Pre-fill hidden form fields
-            document.getElementById('senderName').value = currentUser.name;
-            document.getElementById('senderEmail').value = currentUser.email;
-            document.getElementById('authToken').value = currentUser.token;
+            document.getElementById('senderName').value = currentUser.name || '';
+            document.getElementById('senderEmail').value = currentUser.email || '';
+            document.getElementById('authToken').value = currentUser.token || '';
         }
         
         // Google Sign-In button click handler
         document.getElementById('googleSignInBtn').addEventListener('click', function() {
-            google.accounts.id.prompt();
+            console.log('Sign-in button clicked');
+            hideError();
+            
+            if (!isGoogleApiLoaded) {
+                showError('Google Sign-In is still loading. Please wait a moment and try again.');
+                return;
+            }
+            
+            try {
+                // Use the prompt method to show the sign-in popup
+                google.accounts.id.prompt((notification) => {
+                    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                        console.log('Sign-in prompt not displayed:', notification.getNotDisplayedReason());
+                        // Fallback: render a sign-in button
+                        renderSignInButton();
+                    }
+                });
+            } catch (error) {
+                console.error('Error showing sign-in prompt:', error);
+                showError('Unable to show sign-in popup. Please try again.');
+            }
         });
+        
+        // Render sign-in button as fallback
+        function renderSignInButton() {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.id = 'g_id_signin';
+            buttonContainer.style.display = 'inline-block';
+            buttonContainer.style.marginTop = '10px';
+            
+            const signInBtn = document.getElementById('googleSignInBtn');
+            signInBtn.parentNode.insertBefore(buttonContainer, signInBtn.nextSibling);
+            
+            google.accounts.id.renderButton(
+                buttonContainer,
+                {
+                    theme: 'outline',
+                    size: 'large',
+                    width: '100%'
+                }
+            );
+        }
         
         // Logout handler
         document.getElementById('logoutBtn').addEventListener('click', function() {
+            console.log('Logging out...');
+            
             // Clear session
             sessionStorage.removeItem('userAuth');
             currentUser = null;
@@ -634,7 +739,17 @@
             document.getElementById('contactForm').reset();
             
             // Sign out from Google
-            google.accounts.id.disableAutoSelect();
+            if (isGoogleApiLoaded) {
+                google.accounts.id.disableAutoSelect();
+            }
+            
+            // Remove any rendered button
+            const renderedButton = document.getElementById('g_id_signin');
+            if (renderedButton) {
+                renderedButton.remove();
+            }
+            
+            console.log('Logged out successfully');
         });
         
         // Form submission handling
@@ -694,17 +809,30 @@
                 }
             });
         });
-
-        // Prevent form submission without authentication
+        
+        // Initialize everything when the page loads
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('contactForm');
-            form.addEventListener('submit', function(e) {
-                if (!currentUser) {
-                    e.preventDefault();
-                    alert('Authentication required to send messages.');
-                }
-            });
+            console.log('DOM loaded, checking for existing auth...');
+            checkExistingAuth();
         });
+        
+        // Initialize Google Sign-In when the script loads
+        window.addEventListener('load', function() {
+            console.log('Window loaded, initializing Google Sign-In...');
+            
+            // Wait a bit for the Google script to fully load
+            setTimeout(() => {
+                initializeGoogleSignIn();
+            }, 1000);
+        });
+        
+        // Fallback initialization
+        setTimeout(() => {
+            if (!isGoogleApiLoaded) {
+                console.log('Attempting fallback initialization...');
+                initializeGoogleSignIn();
+            }
+        }, 3000);
     </script>
 </body>
 </html>
