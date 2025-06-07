@@ -2,6 +2,35 @@
 let currentUser = null;
 let isGoogleApiLoaded = false;
 
+// Cookie management functions
+function setCookie(name, value, days = 7) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+    document.cookie = `${name}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/;secure;samesite=strict`;
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) {
+            try {
+                return JSON.parse(decodeURIComponent(c.substring(nameEQ.length, c.length)));
+            } catch (e) {
+                console.error('Error parsing cookie:', e);
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+}
+
 // Function to show error messages
 function showError(message) {
     const errorDiv = document.getElementById('errorMessage');
@@ -103,10 +132,11 @@ function handleSignInResponse(response) {
             name: userInfo.name,
             email: userInfo.email,
             picture: userInfo.picture,
-            token: response.credential
+            token: response.credential,
+            signInTime: Date.now()
         };
         
-        // Store auth info (using memory storage for demo)
+        // Store auth info persistently
         storeUserSession(currentUser);
         
         // Show authenticated state
@@ -135,27 +165,77 @@ function parseJwt(token) {
     }
 }
 
-// Store user session (using memory for demo - in production use secure storage)
+// Check if session is still valid (within 7 days)
+function isSessionValid(sessionData) {
+    if (!sessionData || !sessionData.signInTime) {
+        return false;
+    }
+    
+    const sessionAge = Date.now() - sessionData.signInTime;
+    const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+    
+    return sessionAge < maxAge;
+}
+
+// Store user session persistently
 function storeUserSession(user) {
     try {
-        // Using temporary in-memory storage since we can't use localStorage in Claude artifacts
+        // Store in cookie for persistence across sessions
+        setCookie('userSession', user, 7); // 7 days expiration
+        
+        // Also store in memory for immediate access
         window.tempUserSession = user;
+        
+        console.log('User session stored successfully');
     } catch (error) {
         console.error('Error storing session:', error);
+        // Fallback to memory only
+        window.tempUserSession = user;
+    }
+}
+
+// Clear user session
+function clearUserSession() {
+    try {
+        deleteCookie('userSession');
+        window.tempUserSession = null;
+        console.log('User session cleared');
+    } catch (error) {
+        console.error('Error clearing session:', error);
+        window.tempUserSession = null;
     }
 }
 
 // Check for existing authentication
 function checkExistingAuth() {
+    console.log('Checking for existing authentication...');
+    
     try {
-        if (window.tempUserSession) {
+        // First check memory (for same session)
+        if (window.tempUserSession && isSessionValid(window.tempUserSession)) {
             currentUser = window.tempUserSession;
             showAuthenticatedView();
-            console.log('Existing authentication found');
+            console.log('Found valid session in memory');
+            return;
         }
+        
+        // Then check cookie (for persistence across sessions)
+        const cookieSession = getCookie('userSession');
+        if (cookieSession && isSessionValid(cookieSession)) {
+            currentUser = cookieSession;
+            window.tempUserSession = cookieSession; // Sync to memory
+            showAuthenticatedView();
+            console.log('Found valid session in cookie');
+            return;
+        }
+        
+        // No valid session found
+        console.log('No valid existing authentication found');
+        clearUserSession(); // Clean up any invalid data
+        
     } catch (error) {
         console.error('Error checking existing auth:', error);
-        window.tempUserSession = null;
+        clearUserSession();
     }
 }
 
@@ -184,6 +264,19 @@ function showAuthenticatedView() {
     if (senderName) senderName.value = currentUser.name || '';
     if (senderEmail) senderEmail.value = currentUser.email || '';
     if (authToken) authToken.value = currentUser.token || '';
+    
+    console.log('Authenticated view displayed for:', currentUser.name);
+}
+
+// Show unauthenticated view
+function showUnauthenticatedView() {
+    const authSection = document.getElementById('authSection');
+    const contactFormSection = document.getElementById('contactFormSection');
+    
+    if (authSection) authSection.classList.remove('hidden');
+    if (contactFormSection) contactFormSection.classList.add('hidden');
+    
+    console.log('Unauthenticated view displayed');
 }
 
 // Initialize logout functionality
@@ -193,16 +286,12 @@ function initializeLogout() {
         logoutBtn.addEventListener('click', function() {
             console.log('Logging out...');
             
-            // Clear session
-            window.tempUserSession = null;
+            // Clear all session data
+            clearUserSession();
             currentUser = null;
             
             // Reset view
-            const authSection = document.getElementById('authSection');
-            const contactFormSection = document.getElementById('contactFormSection');
-            
-            if (authSection) authSection.classList.remove('hidden');
-            if (contactFormSection) contactFormSection.classList.add('hidden');
+            showUnauthenticatedView();
             
             // Reset form
             const form = document.getElementById('contactForm');
@@ -229,9 +318,11 @@ function initializeForm() {
     
     form.addEventListener('submit', function(e) {
         // Verify user is still authenticated
-        if (!currentUser) {
+        if (!currentUser || !isSessionValid(currentUser)) {
             e.preventDefault();
-            alert('Please sign in again to send your message.');
+            alert('Your session has expired. Please sign in again to send your message.');
+            clearUserSession();
+            showUnauthenticatedView();
             return;
         }
         
@@ -377,6 +468,20 @@ function initializeKeyboardNavigation() {
     });
 }
 
+// Session validation check - run periodically
+function initializeSessionValidation() {
+    // Check session validity every 5 minutes
+    setInterval(() => {
+        if (currentUser && !isSessionValid(currentUser)) {
+            console.log('Session expired, logging out user');
+            clearUserSession();
+            currentUser = null;
+            showUnauthenticatedView();
+            showError('Your session has expired. Please sign in again.');
+        }
+    }, 5 * 60 * 1000); // 5 minutes
+}
+
 // Fallback initialization with multiple attempts
 let initAttempts = 0;
 const maxAttempts = 5;
@@ -405,13 +510,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize all functionality
     showLoadingState();
-    checkExistingAuth();
+    checkExistingAuth(); // This now checks cookies for persistence
     initializeLogout();
     initializeForm();
     initializeFormInteractions();
     initializeBackButton();
     initializeScrollAnimations();
     initializeKeyboardNavigation();
+    initializeSessionValidation();
 });
 
 // Initialize Google Sign-In when the script loads
@@ -427,6 +533,20 @@ window.addEventListener('load', function() {
     setTimeout(attemptInitialization, 2000);
 });
 
+// Handle page visibility changes (when user switches tabs or returns)
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && currentUser) {
+        // Page became visible, check if session is still valid
+        if (!isSessionValid(currentUser)) {
+            console.log('Session expired while page was hidden');
+            clearUserSession();
+            currentUser = null;
+            showUnauthenticatedView();
+            showError('Your session has expired. Please sign in again.');
+        }
+    }
+});
+
 // Export functions for testing or external use
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -434,6 +554,9 @@ if (typeof module !== 'undefined' && module.exports) {
         handleSignInResponse,
         parseJwt,
         showAuthenticatedView,
-        checkExistingAuth
+        checkExistingAuth,
+        storeUserSession,
+        clearUserSession,
+        isSessionValid
     };
 }
