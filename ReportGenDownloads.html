@@ -47,6 +47,14 @@
         .download-btn:active {
             transform: scale(0.98);
         }
+        .read-link {
+            transition: all 0.2s ease;
+            text-decoration: none !important;
+        }
+        .read-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         .progress-bar {
             width: 0%;
             transition: width 0.5s ease;
@@ -155,7 +163,7 @@
                     </div>
                 </div>
                 <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
-                    <a href="https://github.com/Wycliffe147/WyPortfolio/releases/download/v1.0/Excel.Report.Generator.zip" 
+                    <a href="https://github.com/Wycliffe147/WysPortfolio/releases/download/ExcelReportV2.0.0/Excel.Report.Generator.zip" 
                        class="download-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
                        onclick="startDownload('generator-progress', 'generator-btn', this)"
                     >
@@ -193,14 +201,22 @@
                     </div>
                 </div>
                 <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
-                    <a href="Readme.txt" download="Readme.txt" 
-                       class="download-btn w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
-                       onclick="startDownload('readme-progress', 'readme-btn', this)"
-                    >
-                        <i class="fas fa-download mr-2"></i>
-                        Download Readme
-                    </a>
-                </div>
+                    <div class="flex gap-2">
+                        <a href="Readme.txt" download="Readme.txt" 
+                           class="download-btn flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
+                           onclick="startDownload('readme-progress', 'readme-btn', this)"
+                        >
+                            <i class="fas fa-download mr-2"></i>
+                            Download Readme
+                        </a>
+                        <a href="Readme.txt" 
+                           class="read-link bg-white border-2 border-green-600 text-green-700 hover:bg-green-50 font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
+                        >
+                            <i class="fas fa-eye mr-2"></i>
+                            Read Online
+                        </a>
+                    </div>
+                </div>                
             </div>
         </div>
 
@@ -231,13 +247,21 @@
                     </div>
                 </div>
                 <div class="bg-blue-50 px-6 py-4 border-t border-blue-200">
-                    <a href="Project_Info.pdf" download="Project_Info.pdf" 
-                       class="download-btn w-full bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
-                       onclick="startDownload('pdf-progress', 'pdf-btn', this)"
-                    >
-                        <i class="fas fa-download mr-2"></i>
-                        Download Documentation
-                    </a>
+                    <div class="flex gap-2">
+                        <a href="Project_Info.pdf" download="Project_Info.pdf" 
+                           class="download-btn flex-1 bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
+                           onclick="startDownload('pdf-progress', 'pdf-btn', this)"
+                        >
+                            <i class="fas fa-download mr-2"></i>
+                            Download Documentation
+                        </a>
+                        <a href="Project_Info.pdf" 
+                           class="read-link bg-white border-2 border-red-500 text-red-600 hover:bg-red-50 font-medium py-3 px-4 rounded-lg flex items-center justify-center no-underline"
+                        >
+                            <i class="fas fa-eye mr-2"></i>
+                            View PDF
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
